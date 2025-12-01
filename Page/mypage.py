@@ -21,13 +21,13 @@ import pandas as pd
 import altair as alt
 
 st.set_page_config(
-    page_title="Economical growth vs properity",
+    page_title="Economical growth vs prosperity",
     page_icon=":chart_with_upwards_trend:",
     layout="wide",
 )
 
 """
-# :material/query_stats: Economical growth vs properity
+# :material/query_stats: Economical growth vs prosperity
 
 There are going to be things here
 """
