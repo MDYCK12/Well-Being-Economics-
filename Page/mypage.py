@@ -358,6 +358,27 @@ for i, ticker in enumerate(tickers):
 
 data
 
+
+""
+""
+
+"""
+## IMF Economic Data
+"""
+
+# Load the IMF data from Google Sheets
+imf_url = "https://docs.google.com/spreadsheets/d/1BV0koOEqQs580tEPGv9bpZYUfY8q8UTfZGTcEoK_VtQ/export?format=csv&gid=1952168269"
+
+with st.spinner("Loading IMF data..."):
+    try:
+        imf_data = pd.read_csv(imf_url)
+        st.write(f"Loaded {len(imf_data)} rows of IMF data")
+        st.dataframe(imf_data, use_container_width=True)
+    except Exception as e:
+        st.error(f"Could not load IMF data: {e}")
+        st.write("Problem with loading the data")
+
+
 # st.title("Hello Streamlit-er 👋")
 # st.markdown(
 #     """ 
