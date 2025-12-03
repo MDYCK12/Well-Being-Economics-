@@ -1,3 +1,6 @@
+
+# Building functions for streamlit 
+
 import pandas as pd
 import plotly.express as pe
 
@@ -12,3 +15,4 @@ def Unemployment(list_countries, df_full_country_list):
     title="Unemployment levels (%) over Time"
     )
     return fig
+

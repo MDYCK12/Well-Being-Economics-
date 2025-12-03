@@ -1,50 +1,87 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from numpy.random import default_rng as rng
 
+# -----------------------------------
+# PAGE CONFIG
+# -----------------------------------
 st.set_page_config(
     page_title="Economical growth vs wellbeing",
     page_icon=":chart_with_upwards_trend:",
     layout="wide"
 )
 
-# Big title that matches page title
 st.markdown("# Economical growth vs wellbeing")
 
-# --- TAB BUTTONS ---
-tabs = ["Overview", "Asia", "Europe", "Africa", "Americas", "Conclusions"]
-selected_tab = st.radio(
-    "Navigation",
-    tabs,
-    horizontal=True
-)
-
-# defining the plot
-arr = rng(0).normal(1, 1, size=100)
-fig, ax = plt.subplots()
-ax.hist(arr, bins=20)
-
-# Load the IMF data from Google Sheets
+# -----------------------------------
+# LOAD DATA ONCE (GLOBAL)
+# -----------------------------------
 imf_url = "https://docs.google.com/spreadsheets/d/1BV0koOEqQs580tEPGv9bpZYUfY8q8UTfZGTcEoK_VtQ/export?format=csv&gid=1952168269"
+df_url = "https://docs.google.com/spreadsheets/d/1BJYCRpalLJLO5wHX488KBdcf-26NAc0nTkngKodzUYA/export?format=csv"
 
-st.write("---")  # a separator line
+@st.cache_data
+def load_data():
+    return pd.read_csv(df_url)
 
-# --- CONTENT FOR EACH TAB ---
+try:
+    df = load_data()
+except Exception as e:
+    df = None
+    st.error(f"Could not load the dataset: {e}")
+
+# Clean column names (strip whitespace)
+if df is not None:
+    df.columns = [c.strip() for c in df.columns]
+
+# -----------------------------------
+# NAVIGATION TABS
+# -----------------------------------
+tabs = ["Overview", "Asia", "Europe", "Africa", "Americas", "Conclusions"]
+selected_tab = st.radio("Navigation", tabs, horizontal=True)
+
+st.write("---")
+
+# -----------------------------------
+# OVERVIEW TAB
+# -----------------------------------
 if selected_tab == "Overview":
     st.subheader("Overview")
     st.write("General introduction and global analysis.")
-    st.pyplot(fig)
 
-    with st.spinner("Loading IMF data..."):
-        try:
-            imf_data = pd.read_csv(imf_url)
-            st.write(f"Loaded {len(imf_data)} rows of IMF data")
-            st.dataframe(imf_data, use_container_width=True)
-        except Exception as e:
-            st.error(f"Could not load IMF data: {e}")
-            st.write("Problem with loading the data")
+    if df is not None:
 
+        # ------------------------------
+        # LINE CHART: Germany Unemployment
+        # ------------------------------
+        st.markdown("### Unemployment levels (%) in Germany")
+
+        df_germany_unemp = df[
+            (df["Country Name"] == "Germany") &
+            (df["Indicator Name"] == "Unemployment levels (%)")
+        ].sort_values("Year")
+
+        if df_germany_unemp.empty:
+            st.warning("No unemployment data found for Germany.")
+        else:
+            fig, ax = plt.subplots()
+            ax.plot(df_germany_unemp["Year"], df_germany_unemp["Value"], marker="o")
+            ax.set_title("Unemployment levels (%) in Germany")
+            ax.set_xlabel("Year")
+            ax.set_ylabel("Unemployment (%)")
+            st.pyplot(fig)
+
+        st.write("---")
+
+        # ---- Dataset shown AFTER the plot ----
+        st.write(f"Loaded {len(df)} rows of data")
+        st.dataframe(df, use_container_width=True)
+
+    else:
+        st.error("Dataset not available.")
+
+# -----------------------------------
+# OTHER TABS
+# -----------------------------------
 elif selected_tab == "Asia":
     st.subheader("Asia")
     st.write("Analysis for Asian countries.")
@@ -65,8 +102,8 @@ elif selected_tab == "Conclusions":
     st.subheader("Conclusions")
     st.write("Summary and key insights.")
 
-# Example button
+# -----------------------------------
+# EXTRA BUTTON
+# -----------------------------------
 if st.button("Send balloons!"):
     st.balloons()
-
-
