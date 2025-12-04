@@ -30,7 +30,7 @@ def plot_indicator(df_filtered, country, indicator):
     Creates a line plot from a filtered dataframe.
     Returns a Matplotlib figure object.
     """
-    fig, ax = plt.subplots(figsize=(2, 1))   # <<<< CHANGE FIGURE SIZE HERE
+    fig, ax = plt.subplots(figsize=(5, 3))   # <<<< CHANGE FIGURE SIZE HERE
 
     if df_filtered.empty:
         ax.text(0.5, 0.5, "No data available",
