@@ -54,7 +54,7 @@ if selected_tab == "Overview":
 
         st.markdown("### Unemployment levels (%) in Germany")
 
-        # 🔥 Use your new functions
+        # Use our new functions
         df_germany_unemp = filter_data(
             df,
             country="Germany",
