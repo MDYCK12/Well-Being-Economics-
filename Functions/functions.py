@@ -44,3 +44,13 @@ def plot_indicator(df_filtered, country, indicator):
     ax.set_ylabel(indicator)
 
     return fig
+
+# ----------------------------
+# Function 3: Assess mulitple countries per indicator  
+# ----------------------------
+
+def country_analysis(df,country_name, indicator):
+    df_filter=df[df["Country Name"].isin(country_name)]
+    df_filter=df_filter[df_filter["Indicator Name"].isin([indicator])]
+    fig=px.line(df_filter,x="Year", y="Value", color="Country Name", title=indicator)            
+    return fig 
