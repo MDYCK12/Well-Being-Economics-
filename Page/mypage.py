@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-
-# Import your functions
+import sys
+sys.path.append("Functions")
+# Import our functions
 from functions import filter_data, plot_indicator
+
 
 # -----------------------------------
 # PAGE CONFIG
