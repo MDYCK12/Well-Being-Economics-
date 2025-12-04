@@ -2,6 +2,11 @@
 # FUNCTIONS
 # ----------------------------
 
+import pandas as pd
+import seaborn as sns
+import plotly.express as pe
+import matplotlib as plt
+
 # FUNCTION FILTERING DATA BASED ON COUNTRY NAME AND INDICATOR NAME
 # filter_data(df, country, indicator)
 
