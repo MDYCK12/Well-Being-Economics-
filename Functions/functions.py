@@ -1,3 +1,7 @@
+# ----------------------------
+# FUNCTIONS
+# ----------------------------
+
 # FUNCTION CRETAING PLOTS BASED ON COUNTRY AND TYPE OF INDICATOR
 
 def plot_series(df, country, indicator):
@@ -17,3 +21,7 @@ def plot_series(df, country, indicator):
     plt.show()
     
     return melted.sort_values('YEAR')
+
+# ------------------------------
+# PLOTS
+# ------------------------------
