@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Import your functions
+from functions import filter_data, plot_indicator
+
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
@@ -16,7 +19,6 @@ st.markdown("# Economical growth vs wellbeing")
 # -----------------------------------
 # LOAD DATA ONCE (GLOBAL)
 # -----------------------------------
-imf_url = "https://docs.google.com/spreadsheets/d/1BV0koOEqQs580tEPGv9bpZYUfY8q8UTfZGTcEoK_VtQ/export?format=csv&gid=1952168269"
 df_url = "https://docs.google.com/spreadsheets/d/1BJYCRpalLJLO5wHX488KBdcf-26NAc0nTkngKodzUYA/export?format=csv"
 
 @st.cache_data
@@ -29,7 +31,7 @@ except Exception as e:
     df = None
     st.error(f"Could not load the dataset: {e}")
 
-# Clean column names (strip whitespace)
+# Clean column names
 if df is not None:
     df.columns = [c.strip() for c in df.columns]
 
@@ -50,29 +52,26 @@ if selected_tab == "Overview":
 
     if df is not None:
 
-        # ------------------------------
-        # LINE CHART: Germany Unemployment
-        # ------------------------------
         st.markdown("### Unemployment levels (%) in Germany")
 
-        df_germany_unemp = df[
-            (df["Country Name"] == "Germany") &
-            (df["Indicator Name"] == "Unemployment levels (%)")
-        ].sort_values("Year")
+        # 🔥 Use your new functions
+        df_germany_unemp = filter_data(
+            df,
+            country="Germany",
+            indicator="Unemployment levels (%)"
+        )
 
-        if df_germany_unemp.empty:
-            st.warning("No unemployment data found for Germany.")
-        else:
-            fig, ax = plt.subplots()
-            ax.plot(df_germany_unemp["Year"], df_germany_unemp["Value"], marker="o")
-            ax.set_title("Unemployment levels (%) in Germany")
-            ax.set_xlabel("Year")
-            ax.set_ylabel("Unemployment (%)")
-            st.pyplot(fig)
+        fig = plot_indicator(
+            df_germany_unemp,
+            country="Germany",
+            indicator="Unemployment levels (%)"
+        )
+
+        st.pyplot(fig)
 
         st.write("---")
 
-        # ---- Dataset shown AFTER the plot ----
+        # Dataset after plot
         st.write(f"Loaded {len(df)} rows of data")
         st.dataframe(df, use_container_width=True)
 
