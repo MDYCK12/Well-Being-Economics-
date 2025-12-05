@@ -10,7 +10,6 @@ import os
 # -----------------------------------------------------
 
 # Get absolute path to repository root:
-#   /.../Well-Being-Economics-
 repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Add repo root to Python search path
@@ -23,8 +22,6 @@ from Functions.functions import (
     plot_indicator,
     plot_two_indicators_long
 )
-
-
 
 # -----------------------------------
 # PAGE CONFIG
@@ -40,15 +37,12 @@ st.markdown(
     "#### Which countries are best at converting economic prosperity into well-being?"
 )
 
-
 # -----------------------------------
 # LOAD DATA ONCE (GLOBAL)
 # -----------------------------------
 df_url = "https://docs.google.com/spreadsheets/d/1E0lyCSxlC0ajNtzjpWo17TX5DEeEjd33E-j6c7fOBcg/export?format=csv"
 
 # @st.cache_data
-
-
 def load_data():
     return pd.read_csv(df_url)
 
@@ -62,7 +56,6 @@ except Exception as e:
 if df is not None:
     df.columns = [c.strip() for c in df.columns]
 
-
 # -----------------------------------
 # NAVIGATION TABS
 # -----------------------------------
@@ -70,7 +63,6 @@ tabs = ["Overview", "Health", "Poverty and unemployment", "GDP and birth rate", 
 selected_tab = st.radio("Navigation", tabs, horizontal=True)
 
 st.write("---")
-
 
 # -----------------------------------
 # OVERVIEW TAB
@@ -107,7 +99,6 @@ if selected_tab == "Overview":
     else:
         st.error("Dataset not available.")
 
-
 # -----------------------------------
 # OTHER TABS
 # -----------------------------------
@@ -117,16 +108,15 @@ elif selected_tab == "Health":
 
 elif selected_tab == "Poverty and unemployment":
     st.subheader("Poverty and unemployment")
-    st.write("Visualistation of poverty and unemployment rates across countries")
+    st.write("Visualisation of poverty and unemployment rates across countries")
 
 elif selected_tab == "GDP and birth rate":
     st.subheader("GDP and birth rate")
-    st.write("Visualistation of GDP per capita and birth rates across countries.")
+    st.write("Visualisation of GDP per capita and birth rates across countries.")
 
 elif selected_tab == "Conclusions":
     st.subheader("Conclusions")
     st.write("Summary and key insights.")
-
 
 # -----------------------------------
 # EXTRA BUTTON
