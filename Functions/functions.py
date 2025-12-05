@@ -49,53 +49,63 @@ def plot_indicator(df_filtered, country, indicator):
     plt.tight_layout()
     return fig
 
-# ----------------------------
-# Function 3: #Function comparing two indicators across multiple countries
-# ----------------------------
-
-
 def plot_two_indicators_long(df, countries, ind1, ind2):
-    # Filter for selected countries, indicators, and years 1980-2023
+    """
+    Compare two indicators across multiple countries (1980-2023).
+    ind1: solid line on left axis
+    ind2: dashed line on right axis
+    Returns a Matplotlib figure.
+    """
+    # Filter for selected countries, indicators, and years
     df_f = df[
-        df["Country Name"].isin(countries) &
-        df["Indicator Name"].isin([ind1, ind2]) &
+        df["Country Name"].isin(countries) & 
+        df["Indicator Name"].isin([ind1, ind2]) & 
         df["Year"].between(1980, 2023)
     ]
 
     # Set up figure
     fig, ax1 = plt.subplots(figsize=(12, 7))
 
-    # Color map for countries
+    # Color map
     colors = plt.cm.tab10.colors
 
-
-    # Plot life expectancy (solid) on left axis
+    # Plot ind1 (solid) on ax1
     handles = []
     for i, country in enumerate(countries):
-        df_plot = df_f[(df_f["Country Name"]==country) & (df_f["Indicator Name"]==ind1)]
-        line, = ax1.plot(df_plot["Year"], df_plot["Value"], 
+        df_plot = df_f[(df_f["Country Name"] == country) & (df_f["Indicator Name"] == ind1)]
+        line, = ax1.plot(df_plot["Year"], df_plot["Value"],
                          color=colors[i % len(colors)],
-                         linewidth=2)
+                         linewidth=2,
+                         marker='o')
         handles.append(line)
-    ax1.set_xlabel("Year")
-    ax1.set_ylabel(ind1)
-    ax1.grid(True, linestyle="--", alpha=0.4)
 
-    # Plot GDP per capita (dashed) on right axis
+    ax1.set_xlabel("Year", fontsize=12)
+    ax1.set_ylabel(ind1, fontsize=12)
+    ax1.tick_params(axis='both', which='major', labelsize=10)
+    ax1.grid(True, linestyle='--', alpha=0.4)
+
+    # Plot ind2 (dashed) on ax2
     ax2 = ax1.twinx()
     for i, country in enumerate(countries):
-        df_plot = df_f[(df_f["Country Name"]==country) & (df_f["Indicator Name"]==ind2)]
-        ax2.plot(df_plot["Year"], df_plot["Value"], 
+        df_plot = df_f[(df_f["Country Name"] == country) & (df_f["Indicator Name"] == ind2)]
+        ax2.plot(df_plot["Year"], df_plot["Value"],
                  color=colors[i % len(colors)],
-                 linestyle="--",
-                 linewidth=2)
-    ax2.set_ylabel(ind2)
+                 linestyle='--',
+                 linewidth=2,
+                 marker='x')
+    ax2.set_ylabel(ind2, fontsize=12)
+    ax2.tick_params(axis='both', which='major', labelsize=10)
 
-    # Legend with only country names
-    ax1.legend(handles, countries, bbox_to_anchor=(1.15,1), loc='upper left')
+    # Legend with country names
+    ax1.legend(handles, countries, bbox_to_anchor=(1.15,1), loc='upper left', fontsize=10)
 
-    plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (1980-2023)")
+    # Title
+    plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (1980-2023)", fontsize=14)
     plt.tight_layout()
+
+    # Force draw (ensures axes appear in some backends)
+    fig.canvas.draw()
+
     return fig
 
 
