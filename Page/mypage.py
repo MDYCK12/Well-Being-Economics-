@@ -24,7 +24,6 @@ from Functions.functions import (
     plot_two_indicators_long
 )
 
-from Functions.functions import filter_data, plot_indicator, plot_two_indicators_long
 
 
 
