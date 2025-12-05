@@ -93,3 +93,93 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     fig.canvas.draw()
 
     return fig
+
+# ----------------------------
+# Function 5: Animated GDP vs Life Expectancy Bubble Chart
+# ----------------------------
+import pandas as pd
+import plotly.express as px
+
+def animated_gdp_life_expectancy(df_long, target_countries=None):
+    """
+    Creates an animated bubble chart of GDP vs Life Expectancy over time.
+    
+    Parameters:
+        df_long: long-format DataFrame with 'Country Name', 'Indicator Name', 'Year', 'Value'.
+        target_countries: list of countries to include (default is None, includes all).
+    
+    Returns:
+        fig: Plotly Figure object (animated bubble chart)
+    """
+    # --- Default countries if none provided ---
+    if target_countries is None:
+        target_countries = [
+            'Germany', 'Denmark', 'Poland', 'United States', 'Chile', 
+            'Costa Rica', 'Japan', 'China', 'Indonesia', 'South Africa', 
+            'Ghana', "Cote d'Ivoire"
+        ]
+    
+    # --- Indicators ---
+    GDP_INDICATOR = 'GDP per capita'
+    LIFE_EXPECTANCY_INDICATOR = 'Life expectancy at birth, total (years)'
+    URBAN_POPULATION_INDICATOR = 'Urban population (% of total population)'
+    
+    # Filter
+    df_filtered = df_long[df_long['Indicator Name'].isin(
+        [GDP_INDICATOR, LIFE_EXPECTANCY_INDICATOR, URBAN_POPULATION_INDICATOR]
+    ) & df_long['Country Name'].isin(target_countries)].copy()
+    
+    # Pivot to wide format
+    df_wide = df_filtered.pivot_table(
+        index=['Country Name', 'Year'],
+        columns='Indicator Name',
+        values='Value'
+    ).reset_index()
+    
+    df_wide.columns.name = None
+    df_wide.rename(columns={
+        'Country Name': 'Country',
+        GDP_INDICATOR: 'GDP',
+        LIFE_EXPECTANCY_INDICATOR: 'Life Expectancy',
+        URBAN_POPULATION_INDICATOR: 'Urban Population'
+    }, inplace=True)
+    
+    # Convert numeric
+    df_wide['GDP'] = pd.to_numeric(df_wide['GDP'], errors='coerce')
+    df_wide['Life Expectancy'] = pd.to_numeric(df_wide['Life Expectancy'], errors='coerce')
+    df_wide['Urban Population'] = pd.to_numeric(df_wide['Urban Population'], errors='coerce')
+    df_wide['Year'] = pd.to_numeric(df_wide['Year'], errors='coerce').astype(int)
+    
+    # Drop rows with missing values
+    df_wide = df_wide.dropna(subset=['GDP', 'Life Expectancy', 'Urban Population'])
+    
+    # Filter years every 2 steps
+    all_years = sorted(df_wide['Year'].unique())
+    df_wide = df_wide[df_wide['Year'].isin(all_years[::2])]
+    
+    # Create animated figure
+    max_gdp = df_wide['GDP'].max() * 1.1
+    fig = px.scatter(
+        df_wide,
+        x='GDP',
+        y='Life Expectancy',
+        size='Urban Population',
+        color='Country',
+        animation_frame='Year',
+        animation_group='Country',
+        hover_name='Country',
+        log_x=False,
+        size_max=60,
+        labels={
+            'GDP': 'GDP per Capita',
+            'Life Expectancy': 'Life Expectancy (Years)',
+            'Urban Population': 'Urban Population'
+        },
+        title="Evolution of GDP vs Life Expectancy"
+    )
+    fig.update_layout(
+        xaxis=dict(range=[0, max_gdp]),
+        yaxis=dict(range=[40, 90])
+    )
+    
+    return fig
