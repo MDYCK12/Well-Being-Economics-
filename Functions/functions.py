@@ -57,8 +57,8 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     """
     # Filter data
     df_f = df[
-        df["Country Name"].isin(countries) &
-        df["Indicator Name"].isin([ind1, ind2]) &
+        df["Country Name"].isin(countries) & 
+        df["Indicator Name"].isin([ind1, ind2]) & 
         df["Year"].between(2000, 2023)
     ]
 
@@ -88,11 +88,14 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     # Legend (only country names)
     ax1.legend(handles, countries, bbox_to_anchor=(1.15, 1), loc='upper left', fontsize=10)
 
-    #plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (2000-2023)", fontsize=14)
+    # IMPORTANT: Remove any title
+    ax1.set_title("")  # ensures no title is shown
+
     plt.tight_layout()
     fig.canvas.draw()
 
     return fig
+
 
 # ----------------------------
 # Function 5: Animated GDP vs Life Expectancy Bubble Chart
