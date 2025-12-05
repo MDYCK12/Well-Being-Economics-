@@ -6,6 +6,8 @@ import pandas as pd
 import seaborn as sns
 import plotly.express as pe
 import matplotlib.pyplot as plt
+Functions/__init__.py
+
 
 # ----------------------------
 # Function 1: Filter data by country + indicator
