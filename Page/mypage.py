@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-st.cache_data.clear()
-st.cache_resource.clear()
+
 
 # -----------------------------------------------------
 # FIX IMPORTS (works locally AND on Streamlit Cloud)
