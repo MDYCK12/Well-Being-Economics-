@@ -67,6 +67,7 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     # Color map for countries
     colors = plt.cm.tab10.colors
 
+
     # Plot life expectancy (solid) on left axis
     handles = []
     for i, country in enumerate(countries):
@@ -96,7 +97,6 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     plt.tight_layout()
     return fig
 
-    plt.show()
 
 
 # ----------------------------
