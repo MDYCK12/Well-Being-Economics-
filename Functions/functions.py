@@ -48,7 +48,9 @@ def plot_indicator(df_filtered, country, indicator):
     plt.tight_layout()
     return fig
 
-#Function comparing two indicators across multiple countries
+#----------------------
+# Function 3: comparing two indicators across multiple countries
+#----------------------
 
 def plot_two_indicators_long(df, countries, ind1, ind2):
     # Filter for selected countries, indicators, and years 1980-2023
@@ -91,4 +93,4 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
 
     plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (1980-2023)")
     plt.tight_layout()
-    plt.show()
+    return fig

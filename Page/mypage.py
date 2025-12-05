@@ -8,7 +8,7 @@ import sys
 sys.path.append("Functions")
 
 # Import our functions
-from functions import filter_data, plot_indicator
+from functions import filter_data, plot_indicator, plot_two_indicators_long
 
 
 # -----------------------------------
@@ -24,7 +24,6 @@ st.markdown(
     "# Evolution of economic prosperity and well-being globally\n"
     "#### Which countries are best at converting economic prosperity into well-being?"
 )
-
 
 
 # -----------------------------------
@@ -65,101 +64,22 @@ if selected_tab == "Overview":
 
     if df is not None:
 
-        st.markdown("### Indicators for Germany")
+        # ---------------------------------------
+        # PARAMETERS FOR THE COMPARISON FUNCTION
+        # ---------------------------------------
+        countries = ["United States", "Germany", "Japan"]
+        ind1 = "Life expectancy at birth, total (years)"
+        ind2 = "GDP per capita"
 
-        # ---- Filter data using our function ----
-        df_germany_unemp = filter_data(
-            df,
-            country="Germany",
-            indicator="GDP per capita"
-        )
+        # ---------------------------------------
+        # CALL THE FUNCTION FROM functions.py
+        # ---------------------------------------
+        fig = plot_two_indicators_long(df, countries, ind1, ind2)
 
-        # ---- Create figure using our function ----
-        fig = plot_indicator(
-            df_germany_unemp,
-            country="Germany",
-            indicator="GDP per capita"
-        )
-
-        # ---- Save figure to in-memory PNG and display smaller ----
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", dpi=180, bbox_inches="tight")
-        buf.seek(0)
-        st.image(buf, width=300)  # adjust width in pixels as needed
-
-        plt.close(fig)  # free memory
-
-        # ---- Filter data using our function ----
-        df_germany_unemp = filter_data(
-            df,
-            country="Germany",
-            indicator="Inflation (CPI, %))"
-        )
-
-        # ---- Create figure using our function ----
-        fig = plot_indicator(
-            df_germany_unemp,
-            country="Germany",
-            indicator="Inflation (CPI, %))"
-        )
-
-        # ---- Save figure to in-memory PNG and display smaller ----
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", dpi=180, bbox_inches="tight")
-        buf.seek(0)
-        st.image(buf, width=300)  # adjust width in pixels as needed
-
-        plt.close(fig)  # free memory
-
-
-        # ---- Filter data using our function ----
-        df_germany_unemp = filter_data(
-            df,
-            country="Germany",
-            indicator="Unemployment levels (%)"
-        )
-
-        # ---- Create figure using our function ----
-        fig = plot_indicator(
-            df_germany_unemp,
-            country="Germany",
-            indicator="Unemployment levels (%)"
-        )
-
-        # ---- Save figure to in-memory PNG and display smaller ----
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", dpi=180, bbox_inches="tight")
-        buf.seek(0)
-        st.image(buf, width=300)  # adjust width in pixels as needed
-
-        plt.close(fig)  # free memory
-
-
-
-        # ---- Filter data using our function ----
-        df_germany_unemp = filter_data(
-            df,
-            country="Germany",
-            indicator="National savings (% GDP)"
-        )
-
-        # ---- Create figure using our function ----
-        fig = plot_indicator(
-            df_germany_unemp,
-            country="Germany",
-            indicator="National savings (% GDP)"
-        )
-
-        # ---- Save figure to in-memory PNG and display smaller ----
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", dpi=180, bbox_inches="tight")
-        buf.seek(0)
-        st.image(buf, width=300)  # adjust width in pixels as needed
-
-        plt.close(fig)  # free memory
-
-
-        
+        # ---------------------------------------
+        # DISPLAY FIGURE IN STREAMLIT
+        # ---------------------------------------
+        st.pyplot(fig)
 
         st.write("---")
 
@@ -169,7 +89,6 @@ if selected_tab == "Overview":
 
     else:
         st.error("Dataset not available.")
-
 
 
 # -----------------------------------
