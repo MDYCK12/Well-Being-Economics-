@@ -9,20 +9,16 @@ import os
 # FIX IMPORTS (works locally AND on Streamlit Cloud)
 # -----------------------------------------------------
 
-# Get absolute path to repository root:
-#   /.../Well-Being-Economics-
+# Get absolute path to repository root (one level above Page/)
 repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Add repo root to Python search path
-if repo_root not in sys.path:
-    sys.path.append(repo_root)
+# Add Functions folder to Python path
+functions_path = os.path.join(repo_root, "Functions")
+if functions_path not in sys.path:
+    sys.path.append(functions_path)
 
-
-from Functions.functions import (
-    filter_data,
-    plot_indicator,
-    plot_two_indicators_long
-)
+# Now import functions
+from functions import filter_data, plot_indicator, plot_two_indicators_long
 
 
 
