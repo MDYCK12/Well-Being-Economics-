@@ -102,9 +102,63 @@ if selected_tab == "Overview":
 # -----------------------------------
 # OTHER TABS
 # -----------------------------------
+# -----------------------------------
+# HEALTH TAB
+# -----------------------------------
 elif selected_tab == "Health":
     st.subheader("Health")
     st.write("Visualisation of health care expenditure and life expectancy across countries.")
+
+    if df is not None:
+        # ----------------------------
+        # First row: Europe & Americas
+        # ----------------------------
+        col1, col2 = st.columns(2)
+
+        # Plot 1: Europe
+        with col1:
+            st.markdown("### Europe")
+            countries_europe = ["Germany", "Poland", "Denmark"]
+            ind1 = "Current health expenditure (% of GDP)"
+            ind2 = "Life expectancy at birth, total (years)"
+            fig1 = plot_two_indicators_long(df, countries_europe, ind1, ind2)
+            st.pyplot(fig1)
+            st.caption(f"{ind1} vs {ind2}")
+
+        # Plot 2: Americas
+        with col2:
+            st.markdown("### Americas")
+            countries_americas = ["United States", "Chile", "Costa Rica"]
+            fig2 = plot_two_indicators_long(df, countries_americas, ind1, ind2)
+            st.pyplot(fig2)
+            st.caption(f"{ind1} vs {ind2}")
+
+        # ----------------------------
+        # Second row: Asia & Africa
+        # ----------------------------
+        col3, col4 = st.columns(2)
+
+        # Plot 3: Asia
+        with col3:
+            st.markdown("### Asia")
+            countries_asia = ["Japan", "China", "Indonesia"]
+            fig3 = plot_two_indicators_long(df, countries_asia, ind1, ind2)
+            st.pyplot(fig3)
+            st.caption(f"{ind1} vs {ind2}")
+
+        # Plot 4: Africa
+        with col4:
+            st.markdown("### Africa")
+            countries_africa = ["South Africa", "Ghana", "Cote d'Ivoire"]
+            fig4 = plot_two_indicators_long(df, countries_africa, ind1, ind2)
+            st.pyplot(fig4)
+            st.caption(f"{ind1} vs {ind2}")
+
+    else:
+        st.error("Dataset not available.")
+
+
+
 
 elif selected_tab == "Poverty and unemployment":
     st.subheader("Poverty and unemployment")
