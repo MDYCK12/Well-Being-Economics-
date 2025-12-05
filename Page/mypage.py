@@ -4,11 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
-# Allow importing from the Functions folder
-sys.path.append("Functions")
+from Functions.functions import filter_data, plot_indicator, plot_two_indicators_long
 
-# Import our functions
-from functions import filter_data, plot_indicator, plot_two_indicators_long
 
 
 # -----------------------------------
