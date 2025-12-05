@@ -66,7 +66,7 @@ if df is not None:
 # -----------------------------------
 # NAVIGATION TABS
 # -----------------------------------
-tabs = ["Overview", "Asia", "Europe", "Africa", "Americas", "Conclusions"]
+tabs = ["Overview", "Health", "Poverty and unemployment", "GDP and birth rate", "Americas", "Conclusions"]
 selected_tab = st.radio("Navigation", tabs, horizontal=True)
 
 st.write("---")
@@ -111,21 +111,17 @@ if selected_tab == "Overview":
 # -----------------------------------
 # OTHER TABS
 # -----------------------------------
-elif selected_tab == "Asia":
-    st.subheader("Asia")
-    st.write("Analysis for Asian countries.")
+elif selected_tab == "Health":
+    st.subheader("Health")
+    st.write("Visualisation of health care expenditure and life expectancy across countries.")
 
-elif selected_tab == "Europe":
-    st.subheader("Europe")
-    st.write("Analysis for European countries.")
+elif selected_tab == "Poverty and unemployment":
+    st.subheader("Poverty and unemployment")
+    st.write("Visualistation of poverty and unemployment rates across countries")
 
-elif selected_tab == "Africa":
-    st.subheader("Africa")
-    st.write("Analysis for African countries.")
-
-elif selected_tab == "Americas":
-    st.subheader("Americas")
-    st.write("Analysis for countries in North and South America.")
+elif selected_tab == "GDP and birth rate":
+    st.subheader("GDP and birth rate")
+    st.write("Visualistation of GDP per capita and birth rates across countries.")
 
 elif selected_tab == "Conclusions":
     st.subheader("Conclusions")
