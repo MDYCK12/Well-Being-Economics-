@@ -46,7 +46,7 @@ st.markdown(
 # -----------------------------------
 df_url = "https://docs.google.com/spreadsheets/d/1E0lyCSxlC0ajNtzjpWo17TX5DEeEjd33E-j6c7fOBcg/export?format=csv"
 
-@st.cache_data
+
 def load_data():
     return pd.read_csv(df_url)
 
