@@ -86,9 +86,9 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     ax2.tick_params(axis='both', which='major', labelsize=10)
 
     # Legend (only country names)
-    ax1.legend(handles, countries, bbox_to_anchor=(1.15, 1), loc='upper left', fontsize=10)
+    #ax1.legend(handles, countries, bbox_to_anchor=(1.15, 1), loc='upper left', fontsize=10)
 
-    plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (2000-2023)", fontsize=14)
+    #plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (2000-2023)", fontsize=14)
     plt.tight_layout()
     fig.canvas.draw()
 
