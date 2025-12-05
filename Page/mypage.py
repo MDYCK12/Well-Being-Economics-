@@ -15,12 +15,16 @@ from functions import filter_data, plot_indicator
 # PAGE CONFIG
 # -----------------------------------
 st.set_page_config(
-    page_title="Economical growth vs wellbeing",
+    page_title="Evolution of economic prosperity and well-being globally",
     page_icon=":chart_with_upwards_trend:",
     layout="wide"
 )
 
-st.markdown("# Economical growth vs wellbeing")
+st.markdown(
+    "# Evolution of economic prosperity and well-being globally\n"
+    "#### Which countries are best at converting economic prosperity into well-being?"
+)
+
 
 
 # -----------------------------------
