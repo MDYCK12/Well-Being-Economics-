@@ -3,6 +3,26 @@ import io
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
+import os
+
+# -----------------------------------------------------
+# FIX IMPORTS (works locally AND on Streamlit Cloud)
+# -----------------------------------------------------
+
+# Get absolute path to repository root:
+#   /.../Well-Being-Economics-
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Add repo root to Python search path
+if repo_root not in sys.path:
+    sys.path.append(repo_root)
+
+
+from Functions.functions import (
+    filter_data,
+    plot_indicator,
+    plot_two_indicators_long
+)
 
 from Functions.functions import filter_data, plot_indicator, plot_two_indicators_long
 
