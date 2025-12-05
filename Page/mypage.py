@@ -66,7 +66,7 @@ if df is not None:
 # -----------------------------------
 # NAVIGATION TABS
 # -----------------------------------
-tabs = ["Overview", "Health", "Poverty and unemployment", "GDP and birth rate", "Americas", "Conclusions"]
+tabs = ["Overview", "Health", "Poverty and unemployment", "GDP and birth rate", "Conclusions"]
 selected_tab = st.radio("Navigation", tabs, horizontal=True)
 
 st.write("---")
