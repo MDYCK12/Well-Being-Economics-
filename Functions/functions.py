@@ -3,10 +3,7 @@
 # ----------------------------
 
 import pandas as pd
-import seaborn as sns
-import plotly.express as pe
 import matplotlib.pyplot as plt
-
 
 # ----------------------------
 # Function 1: Filter data by country + indicator
@@ -20,8 +17,8 @@ def filter_data(df, country, indicator):
         (df["Country Name"] == country) &
         (df["Indicator Name"] == indicator)
     ].sort_values("Year")
-
     return df_filtered
+
 
 # ----------------------------
 # Function 2: Plot indicator as a line chart
@@ -30,7 +27,6 @@ def plot_indicator(df_filtered, country, indicator):
     """
     Creates a line plot from a filtered dataframe.
     Returns a Matplotlib figure object.
-    Works in both Jupyter and Streamlit.
     """
     fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -49,25 +45,31 @@ def plot_indicator(df_filtered, country, indicator):
     plt.tight_layout()
     return fig
 
-# ----------------------------
-# Function 3: Plot 2 indicator for multiple countries
-# ----------------------------
 
+# ----------------------------
+# Function 3: Compare two indicators across multiple countries
+# ----------------------------
 def plot_two_indicators_long(df, countries, ind1, ind2):
+    """
+    Plots two indicators for multiple countries.
+    ind1 -> solid line (left axis)
+    ind2 -> dashed line (right axis)
+    """
+    # Filter data
     df_f = df[
         df["Country Name"].isin(countries) &
         df["Indicator Name"].isin([ind1, ind2]) &
-        df["Year"].between(1980, 2023)
+        df["Year"].between(2000, 2023)
     ]
 
     fig, ax1 = plt.subplots(figsize=(12, 7))
     colors = plt.cm.tab10.colors
 
+    # Plot ind1 (solid) on left axis
     handles = []
     for i, country in enumerate(countries):
         df_plot = df_f[(df_f["Country Name"] == country) & (df_f["Indicator Name"] == ind1)]
-        line, = ax1.plot(df_plot["Year"], df_plot["Value"],
-                         color=colors[i % len(colors)], linewidth=2, marker='o')
+        line, = ax1.plot(df_plot["Year"], df_plot["Value"], color=colors[i % len(colors)], linewidth=2, marker='o')
         handles.append(line)
 
     ax1.set_xlabel("Year", fontsize=12)
@@ -75,46 +77,19 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     ax1.tick_params(axis='both', which='major', labelsize=10)
     ax1.grid(True, linestyle='--', alpha=0.4)
 
+    # Plot ind2 (dashed) on right axis
     ax2 = ax1.twinx()
     for i, country in enumerate(countries):
         df_plot = df_f[(df_f["Country Name"] == country) & (df_f["Indicator Name"] == ind2)]
-        ax2.plot(df_plot["Year"], df_plot["Value"],
-                 color=colors[i % len(colors)], linestyle='--',
-                 linewidth=2, marker='x')
+        ax2.plot(df_plot["Year"], df_plot["Value"], color=colors[i % len(colors)], linestyle='--', linewidth=2, marker='x')
     ax2.set_ylabel(ind2, fontsize=12)
     ax2.tick_params(axis='both', which='major', labelsize=10)
 
-    ax1.legend(handles, countries, bbox_to_anchor=(1.15,1), loc='upper left', fontsize=10)
-    plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (1980-2023)", fontsize=14)
+    # Legend (only country names)
+    ax1.legend(handles, countries, bbox_to_anchor=(1.15, 1), loc='upper left', fontsize=10)
 
+    plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (2000-2023)", fontsize=14)
     plt.tight_layout()
-
-    # Important: do NOT call plt.show() in Streamlit!
-    # Force the figure to draw so axes appear
     fig.canvas.draw()
 
-    return fig
-
-
-
-# ----------------------------
-# Function 4: Define function to assess two indicators per country
-# ----------------------------
-
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-
-def country_analysis(df,country_name, indicator):
-    df_filter=df[df["Country Name"].isin(country_name)]
-    df_filter=df_filter[df_filter["Indicator Name"].isin(indicator)]
-    print(df_filter)
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-    fig.add_trace(
-    go.Scatter(x=df_filter["Year"],y=df_filter["Value"], name="indicator"),
-    secondary_y=False,
-    )
-    fig.add_trace(
-    go.Scatter(x=df_filter["Year"],y=df_filter["Value"], name="indicator"),
-    secondary_y=True,
-    )
     return fig
