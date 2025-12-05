@@ -48,9 +48,10 @@ def plot_indicator(df_filtered, country, indicator):
     plt.tight_layout()
     return fig
 
-#----------------------
-# Function 3: comparing two indicators across multiple countries
-#----------------------
+# ----------------------------
+# Function 3: #Function comparing two indicators across multiple countries
+# ----------------------------
+
 
 def plot_two_indicators_long(df, countries, ind1, ind2):
     # Filter for selected countries, indicators, and years 1980-2023
@@ -93,4 +94,29 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
 
     plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (1980-2023)")
     plt.tight_layout()
+    return fig
+
+    plt.show()
+
+
+# ----------------------------
+# Function 4: Define function to assess two indicators per country
+# ----------------------------
+
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+def country_analysis(df,country_name, indicator):
+    df_filter=df[df["Country Name"].isin(country_name)]
+    df_filter=df_filter[df_filter["Indicator Name"].isin(indicator)]
+    print(df_filter)
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    fig.add_trace(
+    go.Scatter(x=df_filter["Year"],y=df_filter["Value"], name="indicator"),
+    secondary_y=False,
+    )
+    fig.add_trace(
+    go.Scatter(x=df_filter["Year"],y=df_filter["Value"], name="indicator"),
+    secondary_y=True,
+    )
     return fig
