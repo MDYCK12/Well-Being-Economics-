@@ -38,6 +38,115 @@ def plot_indicator(df_filtered, country, indicator):
         ax.set_axis_off()
         return fig
 
+
+# ----------------------------
+# Function 5: Plot PCA scores for overview (INTERACTIVE)
+# ----------------------------
+def plot_pca_scores_plotly(df, countries, score_column):
+    """
+    Creates an interactive Plotly line chart for PCA scores across multiple countries.
+    Works with df structure: ['Country Name', 'Year', 'score_pca_economics', 'score_pca_wellbeing']
+    
+    Parameters:
+    - df: DataFrame with columns ['Country Name', 'Year', score_column]
+    - countries: List of country names to plot
+    - score_column: String, either 'score_pca_economics' or 'score_pca_wellbeing'
+    
+    Returns:
+    - Plotly figure object
+    """
+    # Filter data
+    df_filtered = df[
+        (df["Country Name"].isin(countries)) &
+        (df["Year"] >= 2000) &
+        (df["Year"] <= 2020)
+    ].sort_values("Year")
+    
+    # Check if data exists
+    if df_filtered.empty:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="No data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=16, color="#999999")
+        )
+        fig.update_layout(
+            template="plotly_dark",
+            paper_bgcolor="#2a2a2a",
+            plot_bgcolor="#2a2a2a",
+            height=500
+        )
+        return fig
+    
+    # Create figure
+    fig = go.Figure()
+    
+    # Color palette that works well with dark backgrounds
+    colors = ['#667eea', '#f093fb', '#4facfe', '#fa709a', '#fee140', '#30cfd0', '#a8edea', '#fed6e3', '#96fbc4', '#f9f586']
+    
+    # Add a line for each country
+    for i, country in enumerate(countries):
+        df_country = df_filtered[df_filtered["Country Name"] == country]
+        
+        if not df_country.empty:
+            fig.add_trace(go.Scatter(
+                x=df_country["Year"],
+                y=df_country[score_column],
+                mode='lines+markers',
+                name=country,
+                line=dict(width=2.5, color=colors[i % len(colors)]),
+                marker=dict(size=6),
+                hovertemplate='<b>%{fullData.name}</b><br>' +
+                             'Year: %{x}<br>' +
+                             'Score: %{y:.2f}<br>' +
+                             '<extra></extra>'
+            ))
+    
+    # Determine title based on score column
+    title_text = "Economic Prosperity Score" if "economics" in score_column else "Well-being Score"
+    
+    # Update layout for dark theme
+    fig.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="#2a2a2a",
+        plot_bgcolor="#2a2a2a",
+        font=dict(color="#e0e0e0", size=11),
+        title=dict(
+            text=title_text,
+            font=dict(size=14, color="#ffffff"),
+            x=0.5,
+            xanchor='center'
+        ),
+        xaxis=dict(
+            title="Year",
+            gridcolor="#3a3a3a",
+            showgrid=True,
+            zeroline=False
+        ),
+        yaxis=dict(
+            title="Score",
+            gridcolor="#3a3a3a",
+            showgrid=True,
+            zeroline=False
+        ),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            bgcolor="rgba(42, 42, 42, 0.8)",
+            bordercolor="#3a3a3a",
+            borderwidth=1
+        ),
+        hovermode='x unified',
+        height=500,
+        margin=dict(l=60, r=20, t=60, b=60)
+    )
+    
+    return fig
+
     ax.plot(df_filtered["Year"], df_filtered["Value"], marker="o", linewidth=2)
     ax.set_title(f"{indicator} in {country}")
     ax.set_xlabel("Year")

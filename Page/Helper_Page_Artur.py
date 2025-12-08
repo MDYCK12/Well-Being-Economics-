@@ -22,7 +22,8 @@ from Functions.functions import (
     filter_data,
     plot_indicator,
     plot_two_indicators_long,
-    plot_indicator_plotly
+    plot_indicator_plotly,
+    plot_pca_scores_plotly
 )
 
 # -----------------------------------
@@ -66,46 +67,61 @@ st.markdown("""
         color: #e0e0e0 !important;
     }
     
-    /* Navigation tabs */
-    .stRadio > div {
+    /* Navigation tabs - Modern underline style */
+    div.row-widget.stRadio > div {
         background-color: transparent;
         padding: 0;
-        gap: 1rem;
+        gap: 0;
         display: flex;
         justify-content: center;
+        border-bottom: 2px solid #3a3a3a;
     }
     
-    .stRadio > div > label {
-        background-color: #2a2a2a !important;
+    div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"] {
+        background-color: transparent !important;
         color: #b0b0b0 !important;
-        padding: 0.75rem 2.5rem !important;
-        border-radius: 8px !important;
-        border: 2px solid #3a3a3a !important;
+        padding: 1rem 2.5rem !important;
+        border-radius: 0 !important;
+        border: none !important;
+        border-bottom: 3px solid transparent !important;
         transition: all 0.3s ease !important;
         font-weight: 400 !important;
+        font-size: 1.3rem !important;
         cursor: pointer !important;
-        margin: 0 0.5rem !important;
+        margin: 0 !important;
+        position: relative;
+        bottom: -2px;
     }
     
-    .stRadio > div > label:hover {
-        background-color: #3a3a3a !important;
-        border-color: #667eea !important;
+    div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"]:hover {
         color: #ffffff !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        background-color: rgba(102, 126, 234, 0.1) !important;
     }
     
     /* Hide the radio button dot */
-    .stRadio > div > label > div:first-child {
+    div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"] > div:first-child {
         display: none !important;
     }
     
-    /* Selected tab styling */
-    .stRadio > div > label[data-selected="true"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        color: #ffffff !important;
-        border-color: #667eea !important;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    /* Selected tab styling - using aria-checked attribute */
+    div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"][aria-checked="true"] {
+        color: #667eea !important;
+        border-bottom-color: #667eea !important;
+        font-weight: 700 !important;
+        background-color: rgba(102, 126, 234, 0.15) !important;
+    }
+    
+    /* Also try with input checked state */
+    div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"]:has(input:checked) {
+        color: #667eea !important;
+        border-bottom-color: #667eea !important;
+        font-weight: 700 !important;
+        background-color: rgba(102, 126, 234, 0.15) !important;
+    }
+    
+    /* Multiselect width control */
+    .stMultiSelect {
+        max-width: 50% !important;
     }
     
     /* Button styling */
@@ -174,23 +190,35 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------
-# LOAD DATA ONCE (GLOBAL)
+# LOAD DATA ONCE (GLOBAL) - WITH CACHING FOR FASTER LOAD
 # -----------------------------------
 df_url = "https://docs.google.com/spreadsheets/d/1E0lyCSxlC0ajNtzjpWo17TX5DEeEjd33E-j6c7fOBcg/export?format=csv"
+df_overview_url = "https://docs.google.com/spreadsheets/d/1JRp5v_2U4HMxl3aB_UZF7MHHPn3o0cAHSgn0ZeuFrvE/export?format=csv&gid=235949117"
 
-@st.cache_data
+@st.cache_data(ttl=3600)  # Cache for 1 hour
 def load_data():
     return pd.read_csv(df_url)
 
-try:
-    df = load_data()
-except Exception as e:
-    df = None
-    st.error(f"Could not load the dataset: {e}")
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def load_overview_data():
+    return pd.read_csv(df_overview_url)
+
+# Show loading spinner
+with st.spinner('Loading data...'):
+    try:
+        df = load_data()
+        df_overview = load_overview_data()
+    except Exception as e:
+        df = None
+        df_overview = None
+        st.error(f"Could not load the dataset: {e}")
 
 # Clean column names
 if df is not None:
     df.columns = [c.strip() for c in df.columns]
+    
+if df_overview is not None:
+    df_overview.columns = [c.strip() for c in df_overview.columns]
 
 # -----------------------------------
 # HEADER
@@ -215,35 +243,53 @@ if selected_tab == "Overview":
     st.subheader("Overview")
     st.write("General introduction and global analysis.")
 
-    if df is not None:
-        # Single comprehensive GDP comparison
-        st.markdown("### Global GDP per capita Comparison (2000-2020)")
+    if df_overview is not None:
+        # Economic prosperity score comparison with country selector
+        st.markdown("### Economic Prosperity Score Comparison (2000-2020)")
+        st.write("This chart uses our calculated PCA-based economic prosperity scores.")
         st.write("")
         
-        # All countries from all regions
-        all_comparison_countries = [
-            "Japan", "China", "Indonesia",  # Asia
+        # Get unique countries from overview dataset
+        all_countries_overview = sorted(df_overview['Country Name'].unique())
+        
+        # Default selection - key countries from different regions
+        default_countries = [
+            "Japan", "Indonesia",  # Asia
             "Germany", "Denmark", "Poland",  # Europe
-            "South Africa", "Ghana", "Cote d'Ivoire",  # Africa
+            "South Africa",  # Africa
             "United States", "Chile", "Costa Rica"  # Americas
         ]
         
-        fig_gdp = plot_indicator_plotly(df, all_comparison_countries, "GDP per capita")
-        st.plotly_chart(fig_gdp, use_container_width=True)
+        # Filter default countries to only those available in dataset
+        default_countries = [c for c in default_countries if c in all_countries_overview]
+        
+        selected_countries_overview = st.multiselect(
+            "Select countries to compare",
+            all_countries_overview,
+            default=default_countries,
+            key="overview_countries"
+        )
+        
+        if len(selected_countries_overview) > 0:
+            # Use the new PCA scores function
+            fig_score = plot_pca_scores_plotly(df_overview, selected_countries_overview, "score_pca_economics")
+            st.plotly_chart(fig_score, use_container_width=True, key="overview_chart")
+        else:
+            st.info("Please select at least one country to view the comparison.")
 
         st.write("---")
         st.markdown(
             "### Key Findings\n\n"
             "USA and Germany are most successful economically and excel at promoting well-being.\n\n"
-            "For the purpose of our analysis we developed an economic indicator."
+            "For the purpose of our analysis we developed an economic indicator based on PCA (Principal Component Analysis)."
         )
 
         # Show dataset
         with st.expander("📊 View Raw Data"):
-            st.write(f"Loaded {len(df)} rows of data")
-            st.dataframe(df, use_container_width=True)
+            st.write(f"Loaded {len(df_overview)} rows of overview data")
+            st.dataframe(df_overview, use_container_width=True)
     else:
-        st.error("Dataset not available.")
+        st.error("Overview dataset not available.")
 
 # -----------------------------------
 # DEEP DIVE TAB
@@ -258,7 +304,7 @@ elif selected_tab == "Deep Dive":
         selected_countries = st.multiselect(
             "Select countries to compare (up to 5)",
             all_countries,
-            default=["United States", "Germany", "Japan", "China"],
+            default=["United States", "Germany", "Japan"],
             max_selections=5
         )
         
