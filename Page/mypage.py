@@ -92,6 +92,11 @@ if selected_tab == "Overview":
         st.pyplot(fig)
 
         st.write("---")
+        st.markdown(
+        "### USA and Germany are most successful economically and excel at promoting well-being\n"
+        "### For the purpuse of our analysis we developed and economic indicator.\n" 
+        "### The formula: "
+)
 
         # Show dataset
         st.write(f"Loaded {len(df)} rows of data")

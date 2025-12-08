@@ -69,7 +69,9 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     handles = []
     for i, country in enumerate(countries):
         df_plot = df_f[(df_f["Country Name"] == country) & (df_f["Indicator Name"] == ind1)]
-        line, = ax1.plot(df_plot["Year"], df_plot["Value"], color=colors[i % len(colors)], linewidth=2, marker='o')
+        line, = ax1.plot(df_plot["Year"], df_plot["Value"],
+                         color=colors[i % len(colors)],
+                         linewidth=2, marker='o')
         handles.append(line)
 
     ax1.set_xlabel("Year", fontsize=12)
@@ -81,14 +83,17 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
     ax2 = ax1.twinx()
     for i, country in enumerate(countries):
         df_plot = df_f[(df_f["Country Name"] == country) & (df_f["Indicator Name"] == ind2)]
-        ax2.plot(df_plot["Year"], df_plot["Value"], color=colors[i % len(colors)], linestyle='--', linewidth=2, marker='x')
+        ax2.plot(df_plot["Year"], df_plot["Value"],
+                 color=colors[i % len(colors)],
+                 linestyle='--', linewidth=2, marker='x')
+
     ax2.set_ylabel(ind2, fontsize=12)
     ax2.tick_params(axis='both', which='major', labelsize=10)
 
-    # Legend (only country names)
-    ax1.legend(handles, countries, bbox_to_anchor=(1.15, 1), loc='upper left', fontsize=10)
+    # ax1.legend(handles, countries, bbox_to_anchor=(1.15, 1), loc='upper left', fontsize=10)
 
-    plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (2000-2023)", fontsize=14)
+    # plt.title(f"{ind1} (solid) and {ind2} (dashed) — {countries} (2000-2023)", fontsize=14)
+
     plt.tight_layout()
     fig.canvas.draw()
 
