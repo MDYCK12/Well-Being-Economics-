@@ -121,7 +121,9 @@ def plot_indicator_plotly(df, countries, indicator):
     # Filter data
     df_filtered = df[
         (df["Country Name"].isin(countries)) &
-        (df["Indicator Name"] == indicator)
+        (df["Indicator Name"] == indicator) &
+        (df["Year"] >= 2000) &
+        (df["Year"] <= 2020)
     ].sort_values("Year")
     
     # Check if data exists
