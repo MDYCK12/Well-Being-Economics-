@@ -4,6 +4,8 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import plotly.express as px
 
 # ----------------------------
 # Function 1: Filter data by country + indicator
@@ -99,3 +101,107 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
 
     return fig
 
+
+# ----------------------------
+# Function 4: Plot single indicator with Plotly (INTERACTIVE)
+# ----------------------------
+def plot_indicator_plotly(df, countries, indicator):
+    """
+    Creates an interactive Plotly line chart for one indicator across multiple countries.
+    Works well with dark themes.
+    
+    Parameters:
+    - df: DataFrame with columns ['Country Name', 'Indicator Name', 'Year', 'Value']
+    - countries: List of country names to plot
+    - indicator: String, the indicator name to plot
+    
+    Returns:
+    - Plotly figure object
+    """
+    # Filter data
+    df_filtered = df[
+        (df["Country Name"].isin(countries)) &
+        (df["Indicator Name"] == indicator)
+    ].sort_values("Year")
+    
+    # Check if data exists
+    if df_filtered.empty:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="No data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=16, color="#999999")
+        )
+        fig.update_layout(
+            template="plotly_dark",
+            paper_bgcolor="#2a2a2a",
+            plot_bgcolor="#2a2a2a",
+            height=400
+        )
+        return fig
+    
+    # Create figure
+    fig = go.Figure()
+    
+    # Color palette that works well with dark backgrounds
+    colors = ['#667eea', '#f093fb', '#4facfe', '#fa709a', '#fee140', '#30cfd0', '#a8edea', '#fed6e3']
+    
+    # Add a line for each country
+    for i, country in enumerate(countries):
+        df_country = df_filtered[df_filtered["Country Name"] == country]
+        
+        if not df_country.empty:
+            fig.add_trace(go.Scatter(
+                x=df_country["Year"],
+                y=df_country["Value"],
+                mode='lines+markers',
+                name=country,
+                line=dict(width=2.5, color=colors[i % len(colors)]),
+                marker=dict(size=6),
+                hovertemplate='<b>%{fullData.name}</b><br>' +
+                             'Year: %{x}<br>' +
+                             'Value: %{y:.2f}<br>' +
+                             '<extra></extra>'
+            ))
+    
+    # Update layout for dark theme
+    fig.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="#2a2a2a",
+        plot_bgcolor="#2a2a2a",
+        font=dict(color="#e0e0e0", size=11),
+        title=dict(
+            text=indicator,
+            font=dict(size=14, color="#ffffff"),
+            x=0.5,
+            xanchor='center'
+        ),
+        xaxis=dict(
+            title="Year",
+            gridcolor="#3a3a3a",
+            showgrid=True,
+            zeroline=False
+        ),
+        yaxis=dict(
+            title="Value",
+            gridcolor="#3a3a3a",
+            showgrid=True,
+            zeroline=False
+        ),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            bgcolor="rgba(42, 42, 42, 0.8)",
+            bordercolor="#3a3a3a",
+            borderwidth=1
+        ),
+        hovermode='x unified',
+        height=400,
+        margin=dict(l=60, r=20, t=60, b=60)
+    )
+    
+    return fig
