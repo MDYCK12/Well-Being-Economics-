@@ -79,7 +79,7 @@ st.markdown("""
         background-color: #2a2a2a !important;
         color: #b0b0b0 !important;
         padding: 0.75rem 2.5rem !important;
-        border-radius: 25px !important;
+        border-radius: 8px !important;
         border: 2px solid #3a3a3a !important;
         transition: all 0.3s ease !important;
         font-weight: 400 !important;
@@ -216,41 +216,20 @@ if selected_tab == "Overview":
     st.write("General introduction and global analysis.")
 
     if df is not None:
-        # Regional comparison with interactive Plotly charts
-        st.markdown("### Regional Comparison: Life Expectancy")
+        # Single comprehensive GDP comparison
+        st.markdown("### Global GDP per capita Comparison (2000-2020)")
         st.write("")
         
-        # Create 4 columns for regions
-        col1, col2 = st.columns(2)
-        col3, col4 = st.columns(2)
+        # All countries from all regions
+        all_comparison_countries = [
+            "Japan", "China", "Indonesia",  # Asia
+            "Germany", "Denmark", "Poland",  # Europe
+            "South Africa", "Ghana", "Cote d'Ivoire",  # Africa
+            "United States", "Chile", "Costa Rica"  # Americas
+        ]
         
-        # Asia
-        with col1:
-            st.markdown("#### Asia")
-            countries_asia = ["Japan", "China", "Indonesia"]
-            fig_asia = plot_indicator_plotly(df, countries_asia, "Life expectancy at birth, total (years)")
-            st.plotly_chart(fig_asia, use_container_width=True)
-        
-        # Europe
-        with col2:
-            st.markdown("#### Europe")
-            countries_europe = ["Germany", "Denmark", "Poland"]
-            fig_europe = plot_indicator_plotly(df, countries_europe, "Life expectancy at birth, total (years)")
-            st.plotly_chart(fig_europe, use_container_width=True)
-        
-        # Africa
-        with col3:
-            st.markdown("#### Africa")
-            countries_africa = ["South Africa", "Ghana", "Cote d'Ivoire"]
-            fig_africa = plot_indicator_plotly(df, countries_africa, "Life expectancy at birth, total (years)")
-            st.plotly_chart(fig_africa, use_container_width=True)
-        
-        # Americas
-        with col4:
-            st.markdown("#### Americas")
-            countries_americas = ["United States", "Chile", "Costa Rica"]
-            fig_americas = plot_indicator_plotly(df, countries_americas, "Life expectancy at birth, total (years)")
-            st.plotly_chart(fig_americas, use_container_width=True)
+        fig_gdp = plot_indicator_plotly(df, all_comparison_countries, "GDP per capita")
+        st.plotly_chart(fig_gdp, use_container_width=True)
 
         st.write("---")
         st.markdown(
