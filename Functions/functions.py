@@ -73,8 +73,8 @@ def plot_pca_scores_plotly(df, countries, score_column):
         )
         fig.update_layout(
             template="plotly_dark",
-            paper_bgcolor="#2a2a2a",
-            plot_bgcolor="#2a2a2a",
+            paper_bgcolor="#151b3d",
+            plot_bgcolor="#151b3d",
             height=500
         )
         return fig
@@ -109,8 +109,8 @@ def plot_pca_scores_plotly(df, countries, score_column):
     # Update layout for dark theme
     fig.update_layout(
         template="plotly_dark",
-        paper_bgcolor="#2a2a2a",
-        plot_bgcolor="#2a2a2a",
+        paper_bgcolor="#151b3d",
+        plot_bgcolor="#151b3d",
         font=dict(color="#e0e0e0", size=11),
         title=dict(
             text=title_text,
@@ -120,13 +120,13 @@ def plot_pca_scores_plotly(df, countries, score_column):
         ),
         xaxis=dict(
             title="Year",
-            gridcolor="#3a3a3a",
+            gridcolor="#2a3358",
             showgrid=True,
             zeroline=False
         ),
         yaxis=dict(
             title="Score",
-            gridcolor="#3a3a3a",
+            gridcolor="#2a3358",
             showgrid=True,
             zeroline=False
         ),
@@ -136,8 +136,8 @@ def plot_pca_scores_plotly(df, countries, score_column):
             y=1.02,
             xanchor="right",
             x=1,
-            bgcolor="rgba(42, 42, 42, 0.8)",
-            bordercolor="#3a3a3a",
+            bgcolor="rgba(21, 27, 61, 0.8)",
+            bordercolor="#2a3358",
             borderwidth=1
         ),
         hovermode='x unified',
@@ -279,8 +279,8 @@ def plot_indicator_plotly(df, countries, indicator):
     # Update layout for dark theme
     fig.update_layout(
         template="plotly_dark",
-        paper_bgcolor="#2a2a2a",
-        plot_bgcolor="#2a2a2a",
+        paper_bgcolor="#151b3d",
+        plot_bgcolor="#151b3d",
         font=dict(color="#e0e0e0", size=11),
         title=dict(
             text=indicator,
@@ -290,13 +290,13 @@ def plot_indicator_plotly(df, countries, indicator):
         ),
         xaxis=dict(
             title="Year",
-            gridcolor="#3a3a3a",
+            gridcolor="#2a3358",
             showgrid=True,
             zeroline=False
         ),
         yaxis=dict(
             title="Value",
-            gridcolor="#3a3a3a",
+            gridcolor="#2a3358",
             showgrid=True,
             zeroline=False
         ),
@@ -306,8 +306,8 @@ def plot_indicator_plotly(df, countries, indicator):
             y=1.02,
             xanchor="right",
             x=1,
-            bgcolor="rgba(42, 42, 42, 0.8)",
-            bordercolor="#3a3a3a",
+            bgcolor="rgba(21, 27, 61, 0.8)",
+            bordercolor="#2a3358",
             borderwidth=1
         ),
         hovermode='x unified',
