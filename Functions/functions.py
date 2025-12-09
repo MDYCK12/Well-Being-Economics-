@@ -465,8 +465,7 @@ def plot_wellbeing_timeseries(pivot_econ_wellbeing):
     #--- Function to create Quadrant Scatter Plot for all countries across two indicators Max 
 
 #----------------------------------------------------------------
-#----------------------------------------------------------------
-#----------------------------------------------------------------
+
 
 import numpy as np
 
@@ -531,7 +530,7 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
     fig.update_traces(
         mode='markers+text',
         textposition='top right', # Moved to 'top right' for better general visibility
-        textfont=dict(size=10, color='black')
+        textfont=dict(size=10, color='white')
     )
 
     # 5. ADD CENTER LINES (Quadrants)
@@ -539,8 +538,20 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
     fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="red", annotation_text="ESI Average (0)")
 
     # 6. ADJUST LAYOUT
-    fig.update_layout(showlegend=True, height=600, legend_title_text="Quadrant", hovermode="closest")
-    
+    fig.update_layout(
+        height=600,
+        showlegend=True,
+        legend_title_text="Quadrant",
+        legend=dict(
+            font=dict(color="white"),      # <-- legend text color
+            title=dict(font=dict(color="white"))
+        ),
+        title=dict(font=dict(color="white")),
+        xaxis=dict(titlefont=dict(color="white"), tickfont=dict(color="white")),
+        yaxis=dict(titlefont=dict(color="white"), tickfont=dict(color="white")),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)"
+    )
     return fig
 
 # --- EXAMPLE USAGE ---

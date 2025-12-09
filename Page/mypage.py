@@ -338,6 +338,22 @@ if selected_tab == "Overview":
         with col1:
             st.markdown("### Economic Success Index (ESI)")
             fig_esi = plot_esi_ranking_bar(df_filtered_renamed, top_n=0, bottom_n=0)
+            
+            # Update styling to match Deep Dive charts
+            fig_esi.update_layout(
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='#e0e0e0', size=12),
+                title=dict(font=dict(size=16, color='#ffffff')),
+                xaxis=dict(
+                    gridcolor='rgba(255,255,255,0.1)',
+                    zerolinecolor='rgba(255,255,255,0.2)'
+                ),
+                yaxis=dict(
+                    gridcolor='rgba(255,255,255,0.1)'
+                )
+            )
+            
             st.plotly_chart(fig_esi, use_container_width=True, key="esi_bar_chart")
         
         with col2:
@@ -366,7 +382,17 @@ if selected_tab == "Overview":
                     'categoryarray': sorted_country_list 
                 },
                 yaxis_autorange='reversed',
-                showlegend=False
+                showlegend=False,
+                # Add styling to match Deep Dive charts
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='#e0e0e0', size=12),
+                title=dict(font=dict(size=16, color='#ffffff')),
+                xaxis=dict(
+                    gridcolor='rgba(255,255,255,0.1)',
+                    zerolinecolor='rgba(255,255,255,0.2)'
+                ),
+                yaxis_gridcolor='rgba(255,255,255,0.1)'
             )
             fig_wti.add_vline(x=0, line_width=2, line_dash="dash", line_color="red")
             
@@ -380,6 +406,28 @@ if selected_tab == "Overview":
         st.write("")
         
         fig_quadrant = plot_esi_wti_quadrants(df_filtered_renamed)
+        
+        # Update styling to match Deep Dive charts
+        fig_quadrant.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#e0e0e0', size=12),
+            title=dict(font=dict(size=16, color='#ffffff')),
+            xaxis=dict(
+                gridcolor='rgba(255,255,255,0.1)',
+                zerolinecolor='rgba(255,255,255,0.2)'
+            ),
+            yaxis=dict(
+                gridcolor='rgba(255,255,255,0.1)',
+                zerolinecolor='rgba(255,255,255,0.2)'
+            ),
+            legend=dict(
+                bgcolor='rgba(30,39,73,0.8)',
+                bordercolor='rgba(255,255,255,0.2)',
+                borderwidth=1
+            )
+        )
+        
         st.plotly_chart(fig_quadrant, use_container_width=True, key="quadrant_chart")
 
         st.write("---")
@@ -392,7 +440,7 @@ if selected_tab == "Overview":
 
         # Show both datasets
         st.write("---")
-        with st.expander("📊 View Raw Data -  Economic and Well-Being Index"):
+        with st.expander("📊 View Raw Data - Overview Dataset"):
             st.write(f"Loaded {len(df_overview)} rows of overview data")
             st.dataframe(df_overview, use_container_width=True)
         
