@@ -43,7 +43,7 @@ st.markdown("""
 <style>
     /* Main background */
     .stApp {
-        background-color: #1a1a1a;
+        background-color: #0a0e27;
     }
     
     /* Headers */
@@ -67,35 +67,35 @@ st.markdown("""
         color: #e0e0e0 !important;
     }
     
-    /* Navigation tabs - Modern underline style */
+    /* Navigation tabs - Button style (smaller) */
     div.row-widget.stRadio > div {
-        background-color: transparent;
-        padding: 0;
-        gap: 0;
+        background-color: #151b3d;
+        padding: 0.75rem;
+        border-radius: 10px;
+        gap: 0.75rem;
         display: flex;
         justify-content: center;
-        border-bottom: 2px solid #3a3a3a;
     }
     
     div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"] {
-        background-color: transparent !important;
+        background-color: #1e2749 !important;
         color: #b0b0b0 !important;
-        padding: 1rem 2.5rem !important;
-        border-radius: 0 !important;
-        border: none !important;
-        border-bottom: 3px solid transparent !important;
+        padding: 0.6rem 1.75rem !important;
+        border-radius: 8px !important;
+        border: 1px solid #2a3358 !important;
         transition: all 0.3s ease !important;
         font-weight: 400 !important;
-        font-size: 1.3rem !important;
+        font-size: 0.95rem !important;
         cursor: pointer !important;
         margin: 0 !important;
-        position: relative;
-        bottom: -2px;
     }
     
     div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"]:hover {
+        background-color: #2a3358 !important;
+        border-color: #667eea !important;
         color: #ffffff !important;
-        background-color: rgba(102, 126, 234, 0.1) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
     
     /* Hide the radio button dot */
@@ -103,20 +103,19 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Selected tab styling - using aria-checked attribute */
+    /* Selected tab styling */
     div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"][aria-checked="true"] {
-        color: #667eea !important;
-        border-bottom-color: #667eea !important;
-        font-weight: 700 !important;
-        background-color: rgba(102, 126, 234, 0.15) !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: #ffffff !important;
+        border-color: #667eea !important;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
     
-    /* Also try with input checked state */
     div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"]:has(input:checked) {
-        color: #667eea !important;
-        border-bottom-color: #667eea !important;
-        font-weight: 700 !important;
-        background-color: rgba(102, 126, 234, 0.15) !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: #ffffff !important;
+        border-color: #667eea !important;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
     
     /* Multiselect width control */
@@ -182,6 +181,16 @@ st.markdown("""
         border-color: #4a4a4a;
     }
     
+    /* Selected country tags - change from red to blue */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: #1e3a8a !important;
+        border-color: #2563eb !important;
+    }
+    
+    .stMultiSelect [data-baseweb="tag"] span {
+        color: #ffffff !important;
+    }
+    
     /* Plotly charts */
     .js-plotly-plot {
         border-radius: 8px;
@@ -229,6 +238,34 @@ st.markdown("#### Which countries are best at converting economic prosperity int
 st.write("")
 
 # -----------------------------------
+# GLOBAL COUNTRY SELECTOR
+# -----------------------------------
+if df_overview is not None:
+    all_countries = sorted(df_overview['Country Name'].unique())
+    
+    # Default selection
+    default_countries = [
+        "Japan", "China", "Indonesia",  # Asia
+        "Germany", "Denmark", "Poland",  # Europe
+        "South Africa", "Ghana", "Cote d'Ivoire",  # Africa
+        "United States", "Chile", "Costa Rica"  # Americas
+    ]
+    
+    # Filter default countries to only those available
+    default_countries = [c for c in default_countries if c in all_countries]
+    
+    selected_countries = st.multiselect(
+        "🌍 Select countries to compare",
+        all_countries,
+        default=default_countries,
+        key="global_country_selector"
+    )
+else:
+    selected_countries = []
+
+st.write("")
+
+# -----------------------------------
 # NAVIGATION TABS
 # -----------------------------------
 tabs = ["Overview", "Deep Dive", "Conclusions"]
@@ -243,39 +280,15 @@ if selected_tab == "Overview":
     st.subheader("Overview")
     st.write("General introduction and global analysis.")
 
-    if df_overview is not None:
-        # Economic prosperity score comparison with country selector
+    if df_overview is not None and len(selected_countries) > 0:
+        # Economic prosperity score comparison
         st.markdown("### Economic Prosperity Score Comparison (2000-2020)")
         st.write("This chart uses our calculated PCA-based economic prosperity scores.")
         st.write("")
         
-        # Get unique countries from overview dataset
-        all_countries_overview = sorted(df_overview['Country Name'].unique())
-        
-        # Default selection - key countries from different regions
-        default_countries = [
-            "Japan", "Indonesia",  # Asia
-            "Germany", "Denmark", "Poland",  # Europe
-            "South Africa",  # Africa
-            "United States", "Chile", "Costa Rica"  # Americas
-        ]
-        
-        # Filter default countries to only those available in dataset
-        default_countries = [c for c in default_countries if c in all_countries_overview]
-        
-        selected_countries_overview = st.multiselect(
-            "Select countries to compare",
-            all_countries_overview,
-            default=default_countries,
-            key="overview_countries"
-        )
-        
-        if len(selected_countries_overview) > 0:
-            # Use the new PCA scores function
-            fig_score = plot_pca_scores_plotly(df_overview, selected_countries_overview, "score_pca_economics")
-            st.plotly_chart(fig_score, use_container_width=True, key="overview_chart")
-        else:
-            st.info("Please select at least one country to view the comparison.")
+        # Use the globally selected countries
+        fig_score = plot_pca_scores_plotly(df_overview, selected_countries, "score_pca_economics")
+        st.plotly_chart(fig_score, use_container_width=True, key="overview_chart")
 
         st.write("---")
         st.markdown(
@@ -288,6 +301,8 @@ if selected_tab == "Overview":
         with st.expander("📊 View Raw Data"):
             st.write(f"Loaded {len(df_overview)} rows of overview data")
             st.dataframe(df_overview, use_container_width=True)
+    elif len(selected_countries) == 0:
+        st.info("Please select at least one country from the selector above to view the comparison.")
     else:
         st.error("Overview dataset not available.")
 
@@ -298,59 +313,49 @@ elif selected_tab == "Deep Dive":
     st.subheader("How do countries compare across indicator level?")
     st.write("")
 
-    if df is not None:
-        # Country selection
-        all_countries = sorted(df['Country Name'].unique())
-        selected_countries = st.multiselect(
-            "Select countries to compare (up to 5)",
-            all_countries,
-            default=["United States", "Germany", "Japan"],
-            max_selections=5
-        )
+    if df is not None and len(selected_countries) > 0:
+        st.write("---")
         
-        if len(selected_countries) > 0:
-            st.write("---")
+        # Create two columns for Economic and Well-being indicators
+        col_economic, col_wellbeing = st.columns(2)
+        
+        # ECONOMIC INDICATORS (Left Column)
+        with col_economic:
+            st.markdown('<p class="section-header">Economic Indicators</p>', unsafe_allow_html=True)
             
-            # Create two columns for Economic and Well-being indicators
-            col_economic, col_wellbeing = st.columns(2)
+            # 1. GDP per capita
+            fig1 = plot_indicator_plotly(df, selected_countries, "GDP per capita")
+            st.plotly_chart(fig1, use_container_width=True)
+            st.write("")
             
-            # ECONOMIC INDICATORS (Left Column)
-            with col_economic:
-                st.markdown('<p class="section-header">Economic Indicators</p>', unsafe_allow_html=True)
-                
-                # 1. GDP per capita
-                fig1 = plot_indicator_plotly(df, selected_countries, "GDP per capita")
-                st.plotly_chart(fig1, use_container_width=True)
-                st.write("")
-                
-                # 2. Unemployment levels (%)
-                fig2 = plot_indicator_plotly(df, selected_countries, "Unemployment levels (%)")
-                st.plotly_chart(fig2, use_container_width=True)
-                st.write("")
-                
-                # 3. Inflation (CPI, %))
-                fig3 = plot_indicator_plotly(df, selected_countries, "Inflation (CPI, %))")
-                st.plotly_chart(fig3, use_container_width=True)
+            # 2. Unemployment levels (%)
+            fig2 = plot_indicator_plotly(df, selected_countries, "Unemployment levels (%)")
+            st.plotly_chart(fig2, use_container_width=True)
+            st.write("")
             
-            # WELL-BEING INDICATORS (Right Column)
-            with col_wellbeing:
-                st.markdown('<p class="section-header">Well-being Indicators</p>', unsafe_allow_html=True)
-                
-                # 4. Life expectancy at birth, total (years)
-                fig4 = plot_indicator_plotly(df, selected_countries, "Life expectancy at birth, total (years)")
-                st.plotly_chart(fig4, use_container_width=True)
-                st.write("")
-                
-                # 5. Gini index
-                fig5 = plot_indicator_plotly(df, selected_countries, "Gini index")
-                st.plotly_chart(fig5, use_container_width=True)
-                st.write("")
-                
-                # 6. Current health expenditure (% of GDP)
-                fig6 = plot_indicator_plotly(df, selected_countries, "Current health expenditure (% of GDP)")
-                st.plotly_chart(fig6, use_container_width=True)
-        else:
-            st.info("Please select at least one country to view comparisons.")
+            # 3. Inflation (CPI, %))
+            fig3 = plot_indicator_plotly(df, selected_countries, "Inflation (CPI, %))")
+            st.plotly_chart(fig3, use_container_width=True)
+        
+        # WELL-BEING INDICATORS (Right Column)
+        with col_wellbeing:
+            st.markdown('<p class="section-header">Well-being Indicators</p>', unsafe_allow_html=True)
+            
+            # 4. Life expectancy at birth, total (years)
+            fig4 = plot_indicator_plotly(df, selected_countries, "Life expectancy at birth, total (years)")
+            st.plotly_chart(fig4, use_container_width=True)
+            st.write("")
+            
+            # 5. Gini index
+            fig5 = plot_indicator_plotly(df, selected_countries, "Gini index")
+            st.plotly_chart(fig5, use_container_width=True)
+            st.write("")
+            
+            # 6. Current health expenditure (% of GDP)
+            fig6 = plot_indicator_plotly(df, selected_countries, "Current health expenditure (% of GDP)")
+            st.plotly_chart(fig6, use_container_width=True)
+    elif len(selected_countries) == 0:
+        st.info("Please select at least one country from the selector above to view comparisons.")
     else:
         st.error("Dataset not available.")
 
