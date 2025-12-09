@@ -316,3 +316,140 @@ def plot_indicator_plotly(df, countries, indicator):
     )
     
     return fig
+
+
+
+#creating Scatterplot (Katha)
+
+def quadrant_scatter_plot(final_df):
+    """
+    Creates a quadrant scatter plot of average economic vs wellbeing PCA scores per country.
+    
+    Parameters:
+    - final_df (pd.DataFrame): DataFrame containing 'Country Name', 'score_pca_economics', 'score_pca_wellbeing'
+    """
+    
+    # 1. CALCULATE THE AVERAGE SCORES PER COUNTRY
+    df_final_ranking = final_df.groupby('Country Name').agg(
+        {'score_pca_economics': 'mean',
+         'score_pca_wellbeing': 'mean'}
+    ).reset_index()
+
+    # Rename columns for clarity
+    df_final_ranking.rename(columns={
+        'score_pca_economics': 'Avg_Econ',
+        'score_pca_wellbeing': 'Avg_Wellbeing'
+    }, inplace=True)
+
+    # 2. CALCULATE QUADRANTS RELATIVE TO 0 (or global mean)
+    conditions = [
+        (df_final_ranking['Avg_Econ'] > 0) & (df_final_ranking['Avg_Wellbeing'] > 0),  # Top-Right
+        (df_final_ranking['Avg_Econ'] < 0) & (df_final_ranking['Avg_Wellbeing'] > 0),  # Top-Left
+        (df_final_ranking['Avg_Econ'] < 0) & (df_final_ranking['Avg_Wellbeing'] < 0),  # Bottom-Left
+        (df_final_ranking['Avg_Econ'] > 0) & (df_final_ranking['Avg_Wellbeing'] < 0)   # Bottom-Right
+    ]
+    choices = [
+        'High Econ / High Wellbeing',
+        'Low Econ / High Wellbeing',
+        'Low Econ / Low Wellbeing',
+        'High Econ / Low Wellbeing'
+    ]
+    df_final_ranking['Quadrant'] = np.select(conditions, choices, default='Center/Edge Case')
+
+    # 3. CREATE THE SCATTER PLOT
+    fig = px.scatter(
+        df_final_ranking,
+        x='Avg_Econ',
+        y='Avg_Wellbeing',
+        text='Country Name',
+        color='Quadrant',
+        size=[10]*len(df_final_ranking),  # fixed size for all points
+        hover_name='Country Name',
+        title='Economic vs Wellbeing PCA Quadrant Analysis'
+    )
+
+    # 4. FIX LABEL OVERLAP
+    fig.update_traces(
+        mode='markers+text',
+        textposition='top center',
+        textfont=dict(size=10)
+    )
+
+    # 5. ADD CENTER LINES
+    fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="gray", annotation_text="Wellbeing Avg")
+    fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="gray", annotation_text="Economic Avg")
+
+    # 6. LAYOUT ADJUSTMENTS
+    fig.update_layout(
+        height=600,
+        showlegend=True
+    )
+
+    fig.show()
+
+#Creation of individual Line Chart for the economic indicator: 
+
+def plot_economic_timeseries(pivot_econ_wellbeing):
+    # Melt the DataFrame to long format for plotting
+    plot_df = pivot_econ_wellbeing[[
+        "Country Name", "Year", "GDP per capita", "Unemployment_rev", "Inflation_rev","score_pca_economics"
+    ]].melt(
+        id_vars=["Country Name", "Year"],
+        value_vars=["score_pca_economics"],
+        var_name="Indicator",
+        value_name="Score"
+    )
+
+    # Create line chart
+    fig = px.line(
+        plot_df,
+        x="Year",
+        y="Score",
+        color="Country Name",      # each country gets a line
+        line_dash="Indicator",     # different dash style per indicator
+        markers=True,
+        title="Economic PCA Score Over Time per Country"
+    )
+
+    fig.update_layout(
+        xaxis_title="Year",
+        yaxis_title="Score (normalized)",
+        legend_title="Country / Indicator",
+        template="plotly_white"
+    )
+
+    fig.show()
+
+
+    #Line Chart for the Wellbeing indicator: 
+
+    def plot_wellbeing_timeseries(pivot_econ_wellbeing):
+    # Melt the DataFrame to long format for plotting
+    plot_df = pivot_econ_wellbeing[[
+        "Country Name", "Year", "gini_rev", "life_expectancy", "score_pca_wellbeing"
+    ]].melt(
+        id_vars=["Country Name", "Year"],
+        value_vars=["score_pca_wellbeing"],
+        var_name="Indicator",
+        value_name="Score"
+    )
+
+    # Create line chart
+    fig = px.line(
+        plot_df,
+        x="Year",
+        y="Score",
+        color="Country Name",      # each country gets a line
+        line_dash="Indicator",     # different dash style per indicator
+        markers=True,
+        title="Well-being PCA Score Over Time per Country"
+    )
+
+    fig.update_layout(
+        xaxis_title="Year",
+        yaxis_title="Score (normalized)",
+        legend_title="Country / Indicator",
+        template="plotly_white"
+    )
+
+    fig.show()
