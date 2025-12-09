@@ -23,7 +23,9 @@ from Functions.functions import (
     plot_indicator,
     plot_two_indicators_long,
     plot_indicator_plotly,
-    plot_pca_scores_plotly
+    plot_pca_scores_plotly,
+    plot_esi_ranking_bar,
+    plot_esi_wti_quadrants
 )
 
 # -----------------------------------
@@ -139,12 +141,37 @@ st.markdown("""
         box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
     
-    /* Dataframe */
+    /* Dataframe background - DARK THEME */
     .stDataFrame {
-        background-color: #2a2a2a;
         border-radius: 8px;
+        overflow: hidden;
+        background-color: #1a1a1a;
+    }
+
+    /* Table itself */
+    div[data-testid="stDataFrame"] table {
+        background-color: #1a1a1a !important;
+        color: #ffffff !important;
+    }
+
+    /* Table header */
+    div[data-testid="stDataFrame"] th {
+        background-color: #2a2a2a !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    /* Table cells */
+    div[data-testid="stDataFrame"] td {
+        background-color: #1f1f1f !important;
+        color: #e0e0e0 !important;
     }
     
+    /* Alternating rows */
+    div[data-testid="stDataFrame"] tr:nth-child(even) td {
+        background-color: #252525 !important;
+    }
+            
     /* Divider */
     hr {
         border-color: #3a3a3a !important;
@@ -194,6 +221,19 @@ st.markdown("""
     /* Plotly charts */
     .js-plotly-plot {
         border-radius: 8px;
+    }
+    
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        background-color: #1e2749 !important;
+        color: #ffffff !important;
+        border-radius: 8px;
+    }
+    
+    .streamlit-expanderContent {
+        background-color: #1a1a1a !important;
+        border: 1px solid #3a3a3a;
+        border-radius: 0 0 8px 8px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -278,29 +318,89 @@ st.write("---")
 # -----------------------------------
 if selected_tab == "Overview":
     st.subheader("Overview")
-    st.write("General introduction and global analysis.")
+    st.write("Comparative analysis of economic prosperity and well-being across countries.")
 
     if df_overview is not None and len(selected_countries) > 0:
-        # Economic prosperity score comparison
-        st.markdown("### Economic Prosperity Score Comparison (2000-2020)")
-        st.write("This chart uses our calculated PCA-based economic prosperity scores.")
+        # Filter data for selected countries
+        df_filtered = df_overview[df_overview['Country Name'].isin(selected_countries)]
+        
+        # Rename columns to match the function expectations
+        df_filtered_renamed = df_filtered.rename(columns={
+            'score_pca_economics': 'Economic Success (PCA)',
+            'score_pca_wellbeing': 'Well-Being (PCA)'
+        })
+        
         st.write("")
         
-        # Use the globally selected countries
-        fig_score = plot_pca_scores_plotly(df_overview, selected_countries, "score_pca_economics")
-        st.plotly_chart(fig_score, use_container_width=True, key="overview_chart")
+        # Create two columns for side-by-side bar charts
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### Economic Success Index (ESI)")
+            fig_esi = plot_esi_ranking_bar(df_filtered_renamed, top_n=0, bottom_n=0)
+            st.plotly_chart(fig_esi, use_container_width=True, key="esi_bar_chart")
+        
+        with col2:
+            st.markdown("### Well-Being Translation Index (WTI)")
+            # Create a version of the function for well-being
+            df_ranking = df_filtered_renamed.groupby('Country Name')['Well-Being (PCA)'].mean().reset_index()
+            df_ranking.rename(columns={'Well-Being (PCA)': 'Avg_WTI'}, inplace=True)
+            df_ranking_sorted = df_ranking.sort_values(by='Avg_WTI', ascending=False).reset_index(drop=True)
+            
+            import plotly.express as px
+            fig_wti = px.bar(
+                df_ranking_sorted,
+                x='Avg_WTI',
+                y='Country Name',
+                orientation='h', 
+                color='Avg_WTI',
+                color_continuous_scale=px.colors.sequential.Teal,
+                title='Country Ranking: Well-Being Translation Index (WTI, 2000-2023 Average)',
+                labels={'Avg_WTI': 'WTI', 'Country Name': ''}
+            )
+            
+            sorted_country_list = df_ranking_sorted['Country Name'].tolist()
+            fig_wti.update_layout(
+                yaxis={
+                    'categoryorder': 'array',
+                    'categoryarray': sorted_country_list 
+                },
+                yaxis_autorange='reversed',
+                showlegend=False
+            )
+            fig_wti.add_vline(x=0, line_width=2, line_dash="dash", line_color="red")
+            
+            st.plotly_chart(fig_wti, use_container_width=True, key="wti_bar_chart")
+
+        st.write("---")
+        
+        # Quadrant analysis below
+        st.markdown("### ESI vs. WTI Quadrant Analysis")
+        st.write("This chart shows how countries convert economic success into well-being.")
+        st.write("")
+        
+        fig_quadrant = plot_esi_wti_quadrants(df_filtered_renamed)
+        st.plotly_chart(fig_quadrant, use_container_width=True, key="quadrant_chart")
 
         st.write("---")
         st.markdown(
             "### Key Findings\n\n"
-            "USA and Germany are most successful economically and excel at promoting well-being.\n\n"
-            "For the purpose of our analysis we developed an economic indicator based on PCA (Principal Component Analysis)."
+            "Countries in the upper-right quadrant (Successful Translators) demonstrate both high economic success and high well-being outcomes. "
+            "The analysis reveals different strategies countries employ to convert economic prosperity into quality of life improvements.\n\n"
+            "Our indices are based on PCA (Principal Component Analysis) combining multiple economic and well-being indicators."
         )
 
-        # Show dataset
-        with st.expander("📊 View Raw Data"):
+        # Show both datasets
+        st.write("---")
+        with st.expander("📊 View Raw Data -  Economic and Well-Being Index"):
             st.write(f"Loaded {len(df_overview)} rows of overview data")
             st.dataframe(df_overview, use_container_width=True)
+        
+        if df is not None:
+            with st.expander("📊 View Raw Data - Detailed Indicators Dataset"):
+                st.write(f"Loaded {len(df)} rows of detailed indicator data")
+                st.dataframe(df, use_container_width=True)
+        
     elif len(selected_countries) == 0:
         st.info("Please select at least one country from the selector above to view the comparison.")
     else:

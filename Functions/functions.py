@@ -459,16 +459,15 @@ def plot_wellbeing_timeseries(pivot_econ_wellbeing):
     )
 
     fig.show()
-<<<<<<< HEAD
-=======
 
 
 
     #--- Function to create Quadrant Scatter Plot for all countries across two indicators Max 
 
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+#----------------------------------------------------------------
 
-import plotly.express as px
-import pandas as pd
 import numpy as np
 
 def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
@@ -617,4 +616,3 @@ def plot_esi_ranking_bar(df_merged_scores: pd.DataFrame, top_n: int = 0, bottom_
     
     return fig
 
->>>>>>> 7abb5759da1abfb08f793e4126510f6e0c4fccd2
