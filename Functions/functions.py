@@ -317,9 +317,11 @@ def plot_indicator_plotly(df, countries, indicator):
     
     return fig
 
+# ----------------------------
+# FUNCTION 5: creating Scatterplot (Katha)
+# ----------------------------
 
 
-#creating Scatterplot (Katha)
 
 def quadrant_scatter_plot(final_df):
     """
@@ -387,7 +389,10 @@ def quadrant_scatter_plot(final_df):
 
     fig.show()
 
-#Creation of individual Line Chart for the economic indicator: 
+# ----------------------------
+# FUNCTION 6: Creation of individual Line Chart for the economic indicator
+# ----------------------------
+ 
 
 def plot_economic_timeseries(pivot_econ_wellbeing):
     # Melt the DataFrame to long format for plotting
@@ -420,10 +425,11 @@ def plot_economic_timeseries(pivot_econ_wellbeing):
 
     fig.show()
 
+# ----------------------------
+# FUNCTION 67: Creation of individual Line Chart for the well-being indicator
+# ----------------------------
 
-    #Line Chart for the Wellbeing indicator: 
-
-    def plot_wellbeing_timeseries(pivot_econ_wellbeing):
+def plot_wellbeing_timeseries(pivot_econ_wellbeing):
     # Melt the DataFrame to long format for plotting
     plot_df = pivot_econ_wellbeing[[
         "Country Name", "Year", "gini_rev", "life_expectancy", "score_pca_wellbeing"

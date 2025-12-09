@@ -139,12 +139,31 @@ st.markdown("""
         box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
     
-    /* Dataframe */
+        /* Dataframe background */
     .stDataFrame {
-        background-color: #2a2a2a;
         border-radius: 8px;
+        overflow: hidden; /* ensures rounded corners work */
     }
-    
+
+    /* Table itself */
+    div[data-testid="stDataFrame"] table {
+        background-color: #1a1a1a;  /* change to your preferred color */
+        color: #ffffff;              /* text color */
+    }
+
+    /* Table header */
+    div[data-testid="stDataFrame"] th {
+        background-color: #2a2a2a;  /* darker header */
+        color: #ffffff;
+    }
+
+    /* Table cells */
+    div[data-testid="stDataFrame"] td {
+        background-color: #1f1f1f;  /* row background */
+        color: #e0e0e0;
+    }
+
+            
     /* Divider */
     hr {
         border-color: #3a3a3a !important;
