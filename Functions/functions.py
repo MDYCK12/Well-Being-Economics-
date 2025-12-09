@@ -459,3 +459,161 @@ def plot_wellbeing_timeseries(pivot_econ_wellbeing):
     )
 
     fig.show()
+<<<<<<< HEAD
+=======
+
+
+
+    #--- Function to create Quadrant Scatter Plot for all countries across two indicators Max 
+
+
+import plotly.express as px
+import pandas as pd
+import numpy as np
+
+def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
+    """
+    Calculates average ESI and WTI scores per country, assigns them to a quadrant,
+    and generates an interactive scatter plot with labels offset for clarity.
+
+    Args:
+        df_merged_scores: DataFrame containing yearly 'Economic Success (PCA)' 
+                          and 'Well-Being (PCA)' scores.
+
+    Returns:
+        plotly.graph_objects.Figure: The final quadrant chart figure.
+    """
+
+    # 1. CALCULATE THE AVERAGE SCORES PER COUNTRY
+    df_final_ranking = df_merged_scores.groupby('Country Name').agg(
+        {'Economic Success (PCA)': 'mean',
+         'Well-Being (PCA)': 'mean'}
+    ).reset_index()
+
+    # Rename columns for plotting simplicity
+    df_final_ranking.rename(columns={
+        'Economic Success (PCA)': 'Avg_ESI',
+        'Well-Being (PCA)': 'Avg_WTI'
+    }, inplace=True)
+
+    # 2. CALCULATE THE QUADRANT (Country Group)
+    conditions = [
+        (df_final_ranking['Avg_ESI'] > 0) & (df_final_ranking['Avg_WTI'] > 0), 
+        (df_final_ranking['Avg_ESI'] < 0) & (df_final_ranking['Avg_WTI'] > 0), 
+        (df_final_ranking['Avg_ESI'] < 0) & (df_final_ranking['Avg_WTI'] < 0), 
+        (df_final_ranking['Avg_ESI'] > 0) & (df_final_ranking['Avg_WTI'] < 0) 
+    ]
+    choices = [
+        'Successful Translator (High ESI, High WTI)',
+        'Efficient Translator (Low ESI, High WTI)',
+        'Poor Performer (Low ESI, Low WTI)',
+        'Inefficient Translator (High ESI, Low WTI)'
+    ]
+    df_final_ranking['Country Group'] = np.select(conditions, choices, default='Central/Edge Case')
+
+
+    # 3. CREATE THE SCATTER PLOT
+    fig = px.scatter(
+        df_final_ranking, 
+        x='Avg_ESI',          
+        y='Avg_WTI',          
+        text='Country Name',  
+        color='Country Group', 
+        size=[5] * len(df_final_ranking), 
+        hover_name='Country Name',
+        title='ESI vs. WTI Quadrant Analysis (Average 2000-2023)',
+        labels={
+            'Avg_ESI': 'Economic Success Index (ESI)',
+            'Avg_WTI': 'Well-Being Translation Index (WTI)'
+        }
+    )
+
+    # 4. APPLY FIX FOR LABEL OVERLAP
+    fig.update_traces(
+        mode='markers+text',
+        textposition='top right', # Moved to 'top right' for better general visibility
+        textfont=dict(size=10, color='black')
+    )
+
+    # 5. ADD CENTER LINES (Quadrants)
+    fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="red", annotation_text="WTI Average (0)")
+    fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="red", annotation_text="ESI Average (0)")
+
+    # 6. ADJUST LAYOUT
+    fig.update_layout(showlegend=True, height=600, legend_title_text="Quadrant", hovermode="closest")
+    
+    return fig
+
+# --- EXAMPLE USAGE ---
+# Assuming you have run the ESI/WTI calculation and merged them into df_merged_scores
+# fig = plot_esi_wti_quadrants(df_merged_scores)
+# fig.show()
+
+# Plot function to plot economic indicator and well-being indicator as horizontal bar charts - Max  
+
+import plotly.express as px
+import pandas as pd
+
+def plot_esi_ranking_bar(df_merged_scores: pd.DataFrame, top_n: int = 0, bottom_n: int = 0):
+    """
+    Calculates the average ESI score for all countries, sorts them, and 
+    generates a horizontal bar chart of the full ranking or a selection (Top/Bottom N).
+
+    Args:
+        df_merged_scores (pd.DataFrame): DataFrame containing yearly 'Economic Success (PCA)' scores.
+        top_n (int): Number of top-ranked countries to display. If 0, all countries are included.
+        bottom_n (int): Number of bottom-ranked countries to display.
+
+    Returns:
+        plotly.graph_objects.Figure: The final horizontal bar chart figure.
+    """
+    # 1. CALCULATE THE AVERAGE ESI SCORE PER COUNTRY
+    df_ranking = df_merged_scores.groupby('Country Name')['Economic Success (PCA)'].mean().reset_index()
+
+    # Rename the column
+    df_ranking.rename(columns={'Economic Success (PCA)': 'Avg_ESI'}, inplace=True)
+
+    # Sort the ranking from highest ESI to lowest
+    df_ranking_sorted = df_ranking.sort_values(by='Avg_ESI', ascending=False).reset_index(drop=True)
+    
+    # 2. SELECT DATA FOR VISUALIZATION (Handles Top N, Bottom N, or All)
+    if top_n > 0 or bottom_n > 0:
+        df_top = df_ranking_sorted.head(top_n)
+        df_bottom = df_ranking_sorted.tail(bottom_n)
+        # Use concat to combine the selected slices
+        df_bar_viz = pd.concat([df_top, df_bottom])
+    else:
+        # Default: Plot all countries
+        df_bar_viz = df_ranking_sorted
+        
+    # 3. CREATE THE HORIZONTAL BAR CHART
+    fig = px.bar(
+        df_bar_viz,
+        x='Avg_ESI',
+        y='Country Name',
+        orientation='h', 
+        color='Avg_ESI',
+        color_continuous_scale=px.colors.sequential.Teal,
+        title='Country Ranking: Economic Success Index (ESI, 2000-2023 Average)',
+        labels={'Avg_ESI': 'ESI', 'Country Name': ''}
+    )
+
+    # 4. FIX AXIS ORDER
+    # The list must be taken directly from the data used for the figure.
+    sorted_country_list = df_bar_viz['Country Name'].tolist() 
+
+    fig.update_layout(
+        yaxis={
+            'categoryorder': 'array',
+            'categoryarray': sorted_country_list 
+        },
+        # Reverse the Y-axis so the highest score is physically at the top of the chart
+        yaxis_autorange='reversed',
+        showlegend=False
+    )
+
+    # Add a vertical line at ESI = 0 (the sample average)
+    fig.add_vline(x=0, line_width=2, line_dash="dash", line_color="red")
+    
+    return fig
+>>>>>>> 7abb5759da1abfb08f793e4126510f6e0c4fccd2
