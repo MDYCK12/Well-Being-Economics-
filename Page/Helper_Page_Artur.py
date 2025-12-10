@@ -28,6 +28,10 @@ from Functions.functions import (
     plot_esi_wti_quadrants
 )
 
+st.cache_data.clear()  # clears cached data
+st.cache_resource.clear()  # clears cached models/resources
+
+
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
@@ -255,6 +259,15 @@ st.markdown("""
         border: 1px solid #3a3a3a;
         border-radius: 0 0 8px 8px;
     }
+    
+    /* Info box styling for methodology */
+    .methodology-box {
+        background-color: #1e2749;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+        margin: 1rem 0;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -313,37 +326,42 @@ st.write("---")
 
 # -----------------------------------
 # GLOBAL COUNTRY SELECTOR - 60% WIDTH
+# Only show for Overview and Analytical Insights tabs
 # -----------------------------------
-if df_overview is not None:
-    all_countries = sorted(df_overview['Country Name'].unique())
-    
-    # Default selection
-    default_countries = [
-        "Japan", "China", "Indonesia",  # Asia
-        "Germany", "Denmark", "Poland",  # Europe
-        "South Africa", "Ghana", "Cote d'Ivoire",  # Africa
-        "United States", "Chile", "Costa Rica"  # Americas
-    ]
-    
-    # Filter default countries to only those available
-    default_countries = [c for c in default_countries if c in all_countries]
-    
-    # Create a column layout for 60% width
-    col_select, col_empty = st.columns([0.6, 0.4])
-    
-    with col_select:
-        selected_countries = st.multiselect(
-            "🌍 Select countries to compare",
-            all_countries,
-            default=default_countries,
-            key="global_country_selector"
-        )
+if selected_tab in ["Overview", "Analytical Insights"]:
+    if df_overview is not None:
+        all_countries = sorted(df_overview['Country Name'].unique())
+        
+        # Default selection
+        default_countries = [
+            "Japan", "China", "Indonesia",  # Asia
+            "Germany", "Denmark", "Poland",  # Europe
+            "South Africa", "Ghana", "Cote d'Ivoire",  # Africa
+            "United States", "Chile", "Costa Rica"  # Americas
+        ]
+        
+        # Filter default countries to only those available
+        default_countries = [c for c in default_countries if c in all_countries]
+        
+        # Create a column layout for 60% width
+        col_select, col_empty = st.columns([0.6, 0.4])
+        
+        with col_select:
+            selected_countries = st.multiselect(
+                "🌍 Select countries to compare",
+                all_countries,
+                default=default_countries,
+                key="global_country_selector"
+            )
+    else:
+        selected_countries = []
+        st.write("")
+        st.write("")
+        st.write("")
+        st.write("")
 else:
+    # No country selector for Conclusions tab
     selected_countries = []
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
 
 
 # -----------------------------------
@@ -553,10 +571,8 @@ elif selected_tab == "Analytical Insights":
 # CONCLUSIONS TAB
 # -----------------------------------
 elif selected_tab == "Conclusions":
-    st.subheader("Conclusions")
-    st.write("Summary and key insights from our analysis.")
     
-    st.write("")
+    # KEY TAKEAWAYS SECTION
     st.markdown("""
     ### Key Takeaways
     
@@ -571,6 +587,63 @@ elif selected_tab == "Conclusions":
     
     Understanding these relationships helps policymakers design more effective strategies for improving quality of life.
     """)
+    st.write("")
+    st.write("")
+    st.write("")
+    # METHODOLOGY SECTION - Simple text-based approach
+    st.markdown("### 📊 Methodology")
+    
+    st.markdown("""
+    <div class="methodology-box">
+    <h4 style="color: #667eea; margin-top: 0;">Indices Used</h4>
+    
+    <p><strong>Economic Index (EI)</strong><br/>
+    Components: GDP per capita, Unemployment levels, Inflation (CPI)<br/>
+    Weighting: Principal Component Analysis (PCA)<br/>
+    Source: IMF Data, own calculations</p>
+    
+    <p><strong>Well-Being Index (WBI)</strong><br/>
+    Components: Life expectancy at birth, Gini Index<br/>
+    Weighting: Principal Component Analysis (PCA)<br/>
+    Source: World Bank Data, own calculations</p>
+    
+    <h4 style="color: #667eea; margin-top: 1.5rem;">Individual Indicators</h4>
+    
+    <p><strong>GDP per capita</strong> (Thousands, USD) - Measures economic output and standard of living | Source: IMF Data</p>
+    
+    <p><strong>Unemployment levels</strong> (%) - Measures labor market health and resource utilization | Source: IMF Data</p>
+    
+    <p><strong>Inflation</strong> (CPI, Index) - Measures macroeconomic stability and price changes | Source: IMF Data</p>
+    
+    <p><strong>Life expectancy at birth</strong> (Years) - Measures overall public health and longevity | Source: World Bank Data</p>
+    
+    <p><strong>Gini Index</strong> - Measures socio-economic inequality in distribution of income | Source: World Bank Data</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("")
+    
+    # COUNTRY SELECTION - Simple text format
+    st.markdown("""
+    <div class="methodology-box">
+    <h4 style="color: #667eea; margin-top: 0;">🌍 Country Selection</h4>
+    
+    <p><strong>Selected Countries:</strong><br/>
+    Asia: Japan, Indonesia<br/>
+    Europe: Germany, Denmark, Poland<br/>
+    Africa: South Africa<br/>
+    Americas: United States, Chile, Costa Rica</p>
+    
+    <p><strong>Selection Rationale:</strong><br/>
+    Countries were selected based on geographic diversity, robust data availability, 
+    and representation across a spectrum of economic development levels.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("")
+    st.write("---")
+    
+    
 
 # -----------------------------------
 # FOOTER
