@@ -622,7 +622,7 @@ def plot_economic_timeseries(pivot_econ_wellbeing):
     fig.show()
 
 # ----------------------------
-# FUNCTION 67: Creation of individual Line Chart for the well-being indicator
+# FUNCTION 6: Creation of individual Line Chart for the well-being indicator
 # ----------------------------
 
 def plot_wellbeing_timeseries(pivot_econ_wellbeing):
@@ -664,36 +664,22 @@ import pandas as pd
 import numpy as np
 
 def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
-    """
-    Calculates average ESI and WTI scores per country, assigns them to a quadrant,
-    and generates an interactive scatter plot with labels offset for clarity.
 
-    Args:
-        df_merged_scores: DataFrame containing yearly 'Economic Success (PCA)' 
-                          and 'Well-Being (PCA)' scores.
-
-    Returns:
-        plotly.graph_objects.Figure: The final quadrant chart figure.
-    """
-
-    # 1. CALCULATE THE AVERAGE SCORES PER COUNTRY
     df_final_ranking = df_merged_scores.groupby('Country Name').agg(
         {'Economic Success (PCA)': 'mean',
          'Well-Being (PCA)': 'mean'}
     ).reset_index()
 
-    # Rename columns for plotting simplicity
     df_final_ranking.rename(columns={
         'Economic Success (PCA)': 'Avg_ESI',
         'Well-Being (PCA)': 'Avg_WTI'
     }, inplace=True)
 
-    # 2. CALCULATE THE QUADRANT (Country Group)
     conditions = [
-        (df_final_ranking['Avg_ESI'] > 0) & (df_final_ranking['Avg_WTI'] > 0), 
-        (df_final_ranking['Avg_ESI'] < 0) & (df_final_ranking['Avg_WTI'] > 0), 
-        (df_final_ranking['Avg_ESI'] < 0) & (df_final_ranking['Avg_WTI'] < 0), 
-        (df_final_ranking['Avg_ESI'] > 0) & (df_final_ranking['Avg_WTI'] < 0) 
+        (df_final_ranking['Avg_ESI'] > 0) & (df_final_ranking['Avg_WTI'] > 0),
+        (df_final_ranking['Avg_ESI'] < 0) & (df_final_ranking['Avg_WTI'] > 0),
+        (df_final_ranking['Avg_ESI'] < 0) & (df_final_ranking['Avg_WTI'] < 0),
+        (df_final_ranking['Avg_ESI'] > 0) & (df_final_ranking['Avg_WTI'] < 0)
     ]
     choices = [
         'Successful Translator (High ESI, High WTI)',
@@ -703,38 +689,34 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
     ]
     df_final_ranking['Country Group'] = np.select(conditions, choices, default='Central/Edge Case')
 
-
-    # 3. CREATE THE SCATTER PLOT
     fig = px.scatter(
-        df_final_ranking, 
-        x='Avg_ESI',          
-        y='Avg_WTI',          
-        text='Country Name',  
-        color='Country Group', 
-        size=[5] * len(df_final_ranking), 
+        df_final_ranking,
+        x='Avg_ESI',
+        y='Avg_WTI',
+        text='Country Name',
+        color='Country Group',
         hover_name='Country Name',
-        title='ESI vs. WTI Quadrant Analysis (Average 2000-2023)',
+        title='ESI vs. WTI Quadrant Analysis (Average 2000–2023)',
         labels={
             'Avg_ESI': 'Economic Success Index (ESI)',
             'Avg_WTI': 'Well-Being Translation Index (WTI)'
         }
     )
 
-    # 4. APPLY FIX FOR LABEL OVERLAP
     fig.update_traces(
         mode='markers+text',
-        textposition='top right', # Moved to 'top right' for better general visibility
+        marker=dict(size=10),
+        textposition='top right',
         textfont=dict(size=10, color='black')
     )
 
-    # 5. ADD CENTER LINES (Quadrants)
     fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="red", annotation_text="WTI Average (0)")
     fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="red", annotation_text="ESI Average (0)")
 
-    # 6. ADJUST LAYOUT
     fig.update_layout(showlegend=True, height=600, legend_title_text="Quadrant", hovermode="closest")
-    
+
     return fig
+
 
 # --- EXAMPLE USAGE ---
 # Assuming you have run the ESI/WTI calculation and merged them into df_merged_scores
