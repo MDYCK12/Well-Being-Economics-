@@ -518,6 +518,8 @@ if selected_tab == "Overview":
 # ANALYTICAL INSIGHTS TAB
 # -----------------------------------
 elif selected_tab == "Analytical Insights":
+    st.write("---")
+    st.write("")
     st.subheader("How do countries compare across indicator level?")
 
     if df is not None and len(selected_countries) > 0:
