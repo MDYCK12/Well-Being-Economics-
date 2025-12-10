@@ -518,78 +518,6 @@ import numpy as np
 import plotly.express as px
 import pandas as pd
 
-# def quadrant_scatter_plot(final_df):
-#     """
-#     Creates a quadrant scatter plot of average economic vs wellbeing PCA scores per country.
-    
-#     Parameters:
-#     - final_df (pd.DataFrame): DataFrame containing 'Country Name', 'score_pca_economics', 'score_pca_wellbeing'
-#     """
-    
-#     # 1. CALCULATE THE AVERAGE SCORES PER COUNTRY
-#     df_final_ranking = final_df.groupby('Country Name').agg(
-#         {'score_pca_economics': 'mean',
-#          'score_pca_wellbeing': 'mean'}
-#     ).reset_index()
-
-#     # Rename columns for clarity
-#     df_final_ranking.rename(columns={
-#         'score_pca_economics': 'Avg_Econ',
-#         'score_pca_wellbeing': 'Avg_Wellbeing'
-#     }, inplace=True)
-
-#     # 2. CALCULATE QUADRANTS RELATIVE TO 0 (or global mean)
-#     conditions = [
-#         (df_final_ranking['Avg_Econ'] > 0) & (df_final_ranking['Avg_Wellbeing'] > 0),  # Top-Right
-#         (df_final_ranking['Avg_Econ'] < 0) & (df_final_ranking['Avg_Wellbeing'] > 0),  # Top-Left
-#         (df_final_ranking['Avg_Econ'] < 0) & (df_final_ranking['Avg_Wellbeing'] < 0),  # Bottom-Left
-#         (df_final_ranking['Avg_Econ'] > 0) & (df_final_ranking['Avg_Wellbeing'] < 0)   # Bottom-Right
-#     ]
-#     choices = [
-#         'High Econ / High Wellbeing',
-#         'Low Econ / High Wellbeing',
-#         'Low Econ / Low Wellbeing',
-#         'High Econ / Low Wellbeing'
-#     ]
-#     df_final_ranking['Quadrant'] = np.select(conditions, choices, default='Center/Edge Case')
-
-#     # 3. CREATE THE SCATTER PLOT
-#     # *** FIXES APPLIED HERE ***
-#     fig = px.scatter(
-#         df_final_ranking, 
-#         x='Avg_Econ',           # CORRECTED: Changed from 'Avg_ESI'
-#         y='Avg_Wellbeing',      # CORRECTED: Changed from 'Avg_WTI'
-#         text='Country Name',
-#         color='Quadrant',       # CORRECTED: Changed from 'Country Group' to use the calculated 'Quadrant'
-#         size_max=10,
-#         hover_name='Country Name',
-#         title='ESI vs. WTI Quadrant Analysis (Average 2000-2023)',
-#         labels={
-#             'Avg_Econ': 'Economic Success Index (ESI)',        # CORRECTED: Key changed from 'Avg_ESI'
-#             'Avg_Wellbeing': 'Well-Being Translation Index (WTI)' # CORRECTED: Key changed from 'Avg_WTI'
-#         }
-#     )
-
-#     # 4. FIX LABEL OVERLAP
-#     fig.update_traces(
-#         mode='markers+text',
-#         textposition='top center',
-#         textfont=dict(size=10)
-#     )
-
-#     # 5. ADD CENTER LINES
-#     fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="gray", annotation_text="Wellbeing Avg")
-#     fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="gray", annotation_text="Economic Avg")
-
-#     # 6. LAYOUT ADJUSTMENTS
-#     fig.update_layout(
-#         height=600,
-#         showlegend=True
-#     )
-
-#     fig.show()
-
-
 def quadrant_scatter_plot(final_df):
     """
     Creates a quadrant scatter plot of average economic vs wellbeing PCA scores per country.
@@ -626,15 +554,20 @@ def quadrant_scatter_plot(final_df):
     df_final_ranking['Quadrant'] = np.select(conditions, choices, default='Center/Edge Case')
 
     # 3. CREATE THE SCATTER PLOT
+    # *** FIXES APPLIED HERE ***
     fig = px.scatter(
-        df_final_ranking,
-        x='Avg_Econ',
-        y='Avg_Wellbeing',
+        df_final_ranking, 
+        x='Avg_Econ',           # CORRECTED: Changed from 'Avg_ESI'
+        y='Avg_Wellbeing',      # CORRECTED: Changed from 'Avg_WTI'
         text='Country Name',
-        color='Quadrant',
-        size=[10]*len(df_final_ranking),  # fixed size for all points
+        color='Quadrant',       # CORRECTED: Changed from 'Country Group' to use the calculated 'Quadrant'
+        size_max=10,
         hover_name='Country Name',
-        title='Economic vs Wellbeing PCA Quadrant Analysis'
+        title='ESI vs. WTI Quadrant Analysis (Average 2000-2023)',
+        labels={
+            'Avg_Econ': 'Economic Success Index (ESI)',        # CORRECTED: Key changed from 'Avg_ESI'
+            'Avg_Wellbeing': 'Well-Being Translation Index (WTI)' # CORRECTED: Key changed from 'Avg_WTI'
+        }
     )
 
     # 4. FIX LABEL OVERLAP
@@ -655,7 +588,6 @@ def quadrant_scatter_plot(final_df):
     )
 
     fig.show()
-
 
 # Note: You may need to ensure you have these imports at the top of your script:
 # import pandas as pd
