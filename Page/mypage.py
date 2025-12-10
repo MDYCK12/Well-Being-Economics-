@@ -653,3 +653,4 @@ col1, col2, col3 = st.columns([2, 1, 2])
 with col2:
     if st.button("🎈 Celebrate Progress"):
         st.balloons()
+        
