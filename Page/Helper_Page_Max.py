@@ -25,7 +25,8 @@ from Functions.functions import (
     plot_indicator_plotly,
     plot_pca_scores_plotly,
     plot_esi_ranking_bar,
-    plot_esi_wti_quadrants
+    plot_esi_wti_quadrants,
+    display_streamlit_methodology
 )
 
 # -----------------------------------
@@ -543,91 +544,8 @@ elif selected_tab == "Conclusions":
     st.subheader("Conclusions")
     st.write("Summary and key insights from our analysis.")
 
-def display_streamlit_methodology():
-    """
-    Creates and displays the full methodology (indicators and country selection) 
-    in structured tables using Streamlit commands.
-    """
-    
-    # 1. Data for the main Indicators/Index table
-    indicator_data = {
-        'Index Name': [
-            'Economic Index (EI)', 
-            'Well-Being Index',
-            'GDP per capita',
-            'Unemployment levels (%)',
-            'Inflation (CPI, Index)',
-            'National savings (% GDP)',
-            'Life expectancy at birth',
-            'GINI Index'
-        ],
-        'Components/ Sub-Indicators': [
-            'GDP, Inflation Rate, Unemployment Rate',
-            'Life Expectancy, Gini Index',
-            'Thousands, USD',
-            'Percentage',
-            'Index',
-            'Percent of GDP',
-            'Years',
-            'Index'
-        ],
-        'Weighting Method': [
-            'Principal Component Analysis (PCA)',
-            'Principal Component Analysis (PCA)',
-            'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'
-        ],
-        'Rationale for Selection': [
-            'Provides a comprehensive view of economic performance, covering growth (GDP), labor market health (Unemployment), and macroeconomic stability (Inflation).',
-            'Measures key social outcomes: public health/longevity (Life Expectancy) and socio-economic inequality (Gini Index).',
-            'Measures economic output and standard of living.',
-            'Measures labor market health and resource utilization.',
-            'Measures macroeconomic stability and price changes.',
-            'Measures accumulated wealth for future growth.',
-            'Measures overall public health and longevity.',
-            'Measures socio-economic inequality in distribution of income.'
-        ],
-        'Source': [
-            'IMF-Data, own calculations',
-            'World-Bank data, own calculations',
-            'IMF-Data', 'IMF-Data', 'IMF-Data', 'IMF-Data', 
-            'World-Bank Data', 'World-Bank Data'
-        ]
-    }
-    
-    df_methodology = pd.DataFrame(indicator_data)
+    display_streamlit_methodology()
 
-    # 2. Display the Methodology Table using Streamlit
-    st.header("📊 Indicator Methodology Table")
-    st.dataframe(df_methodology, hide_index=True) # st.dataframe is scrollable and searchable
-    
-    # 3. Data for country selection
-    selected_countries = [
-        'Japan', 'Indonesia', 'Germany', 'Denmark', 'Poland', 
-        'South Africa', 'US', 'Chile', 'Costa Rica'
-    ]
-    
-    country_rationale = (
-        "Countries were selected based on **geographic diversity**, robust **data availability**, "
-        "and representation across a spectrum of **economic development** levels."
-    )
-    
-    # 4. Display the Country Selection in a structured block
-    st.header("🌍 Country Selection and Rationale")
-    
-    # Use st.table() to display the list of countries clearly
-    st.markdown("**Selected Countries:**")
-    st.table(pd.DataFrame({'Country': selected_countries}))
-
-    # Display the rationale using markdown for formatting
-    st.markdown("**Selection Rationale:**")
-    st.markdown(country_rationale)
-
-# ---
-# To use this in your Streamlit app, make sure you have imported streamlit and pandas, 
-# and then call the function:
-#
-# if __name__ == '__main__':
-#     display_streamlit_methodology()
 
 # -----------------------------------
 # FOOTER
