@@ -714,9 +714,9 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
 
     fig.update_traces(
         mode='markers+text',
-        marker=dict(size=10),
+        marker=dict(size=40),
         textposition='top right',
-        textfont=dict(size=10, color='black')
+        textfont=dict(size=10, color='white')
     )
 
     fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="red", annotation_text="WTI Average (0)")
