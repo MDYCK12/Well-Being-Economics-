@@ -120,9 +120,45 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
     
-    /* Multiselect width control */
+    /* Multiselect - darker background */
     .stMultiSelect {
         max-width: 50% !important;
+    }
+    
+    .stMultiSelect [data-baseweb="select"] {
+        background-color: #1e2749 !important;
+        border-color: #2a3358 !important;
+    }
+    
+    .stMultiSelect [data-baseweb="select"] > div {
+        background-color: #1e2749 !important;
+    }
+    
+    /* Multiselect input background */
+    .stMultiSelect input {
+        background-color: #1e2749 !important;
+        color: #e0e0e0 !important;
+    }
+    
+    /* Selected country tags */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: #1e3a8a !important;
+        border-color: #2563eb !important;
+    }
+    
+    .stMultiSelect [data-baseweb="tag"] span {
+        color: #ffffff !important;
+    }
+    
+    /* Selectbox styling */
+    .stSelectbox [data-baseweb="select"] {
+        background-color: #1e2749 !important;
+        border-color: #2a3358 !important;
+    }
+    
+    .stSelectbox [data-baseweb="select"] > div {
+        background-color: #1e2749 !important;
+        color: #e0e0e0 !important;
     }
     
     /* Button styling */
@@ -202,22 +238,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
     
-    /* Multiselect styling */
-    .stMultiSelect [data-baseweb="select"] {
-        background-color: #2a2a2a;
-        border-color: #4a4a4a;
-    }
-    
-    /* Selected country tags - change from red to blue */
-    .stMultiSelect [data-baseweb="tag"] {
-        background-color: #1e3a8a !important;
-        border-color: #2563eb !important;
-    }
-    
-    .stMultiSelect [data-baseweb="tag"] span {
-        color: #ffffff !important;
-    }
-    
     /* Plotly charts */
     .js-plotly-plot {
         border-radius: 8px;
@@ -278,6 +298,14 @@ st.markdown("#### Which countries are best at converting economic prosperity int
 st.write("")
 
 # -----------------------------------
+# NAVIGATION TABS - MOVED UP
+# -----------------------------------
+tabs = ["Overview", "Analytical Insights", "Conclusions"]
+selected_tab = st.radio("", tabs, horizontal=True, label_visibility="collapsed")
+
+st.write("")
+
+# -----------------------------------
 # GLOBAL COUNTRY SELECTOR
 # -----------------------------------
 if df_overview is not None:
@@ -302,14 +330,6 @@ if df_overview is not None:
     )
 else:
     selected_countries = []
-
-st.write("")
-
-# -----------------------------------
-# NAVIGATION TABS
-# -----------------------------------
-tabs = ["Overview", "Deep Dive", "Conclusions"]
-selected_tab = st.radio("", tabs, horizontal=True, label_visibility="collapsed")
 
 st.write("---")
 
@@ -336,7 +356,7 @@ if selected_tab == "Overview":
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### Economic Success Index (ESI)")
+            st.markdown("### Economic Index (EI)")
             fig_esi = plot_esi_ranking_bar(df_filtered_renamed, top_n=0, bottom_n=0)
             
             # Update styling to match Deep Dive charts
@@ -344,7 +364,10 @@ if selected_tab == "Overview":
                 plot_bgcolor='rgba(0,0,0,0)',
                 paper_bgcolor='rgba(0,0,0,0)',
                 font=dict(color='#e0e0e0', size=12),
-                title=dict(font=dict(size=16, color='#ffffff')),
+                title=dict(
+                    text='Country Ranking: Economic Index (EI, 2000-2023 Average)',
+                    font=dict(size=16, color='#ffffff')
+                ),
                 xaxis=dict(
                     gridcolor='rgba(255,255,255,0.1)',
                     zerolinecolor='rgba(255,255,255,0.2)'
@@ -357,7 +380,7 @@ if selected_tab == "Overview":
             st.plotly_chart(fig_esi, use_container_width=True, key="esi_bar_chart")
         
         with col2:
-            st.markdown("### Well-Being Translation Index (WTI)")
+            st.markdown("### Well-Being Index (WBI)")
             # Create a version of the function for well-being
             df_ranking = df_filtered_renamed.groupby('Country Name')['Well-Being (PCA)'].mean().reset_index()
             df_ranking.rename(columns={'Well-Being (PCA)': 'Avg_WTI'}, inplace=True)
@@ -371,8 +394,8 @@ if selected_tab == "Overview":
                 orientation='h', 
                 color='Avg_WTI',
                 color_continuous_scale=px.colors.sequential.Teal,
-                title='Country Ranking: Well-Being Translation Index (WTI, 2000-2023 Average)',
-                labels={'Avg_WTI': 'WTI', 'Country Name': ''}
+                title='Country Ranking: Well-Being Index (WBI, 2000-2023 Average)',
+                labels={'Avg_WTI': 'WBI', 'Country Name': ''}
             )
             
             sorted_country_list = df_ranking_sorted['Country Name'].tolist()
@@ -401,13 +424,13 @@ if selected_tab == "Overview":
         st.write("---")
         
         # Quadrant analysis below
-        st.markdown("### ESI vs. WTI Quadrant Analysis")
+        st.markdown("### EI vs. WBI Quadrant Analysis")
         st.write("This chart shows how countries convert economic success into well-being.")
         st.write("")
         
         fig_quadrant = plot_esi_wti_quadrants(df_filtered_renamed)
         
-        # Update styling to match Deep Dive charts
+        # Update styling to match Deep Dive charts - FIXED
         fig_quadrant.update_layout(
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
@@ -415,16 +438,19 @@ if selected_tab == "Overview":
             title=dict(font=dict(size=16, color='#ffffff')),
             xaxis=dict(
                 gridcolor='rgba(255,255,255,0.1)',
-                zerolinecolor='rgba(255,255,255,0.2)'
+                zerolinecolor='rgba(255,255,255,0.2)',
+                title='Economic Index (EI)'
             ),
             yaxis=dict(
                 gridcolor='rgba(255,255,255,0.1)',
-                zerolinecolor='rgba(255,255,255,0.2)'
+                zerolinecolor='rgba(255,255,255,0.2)',
+                title='Well-Being Index (WBI)'
             ),
             legend=dict(
                 bgcolor='rgba(30,39,73,0.8)',
                 bordercolor='rgba(255,255,255,0.2)',
-                borderwidth=1
+                borderwidth=1,
+                font=dict(color='#e0e0e0')
             )
         )
         
@@ -455,9 +481,9 @@ if selected_tab == "Overview":
         st.error("Overview dataset not available.")
 
 # -----------------------------------
-# DEEP DIVE TAB
+# ANALYTICAL INSIGHTS TAB
 # -----------------------------------
-elif selected_tab == "Deep Dive":
+elif selected_tab == "Analytical Insights":
     st.subheader("How do countries compare across indicator level?")
     st.write("")
 
@@ -467,41 +493,44 @@ elif selected_tab == "Deep Dive":
         # Create two columns for Economic and Well-being indicators
         col_economic, col_wellbeing = st.columns(2)
         
+        # Available indicators
+        economic_indicators = [
+            "GDP per capita",
+            "Unemployment levels (%)",
+            "Inflation (CPI, %))"
+        ]
+        
+        wellbeing_indicators = [
+            "Life expectancy at birth, total (years)",
+            "Gini index"
+        ]
+        
         # ECONOMIC INDICATORS (Left Column)
         with col_economic:
             st.markdown('<p class="section-header">Economic Indicators</p>', unsafe_allow_html=True)
             
-            # 1. GDP per capita
-            fig1 = plot_indicator_plotly(df, selected_countries, "GDP per capita")
-            st.plotly_chart(fig1, use_container_width=True)
-            st.write("")
+            selected_economic = st.selectbox(
+                "Select Economic Indicator",
+                economic_indicators,
+                key="economic_selector"
+            )
             
-            # 2. Unemployment levels (%)
-            fig2 = plot_indicator_plotly(df, selected_countries, "Unemployment levels (%)")
-            st.plotly_chart(fig2, use_container_width=True)
-            st.write("")
-            
-            # 3. Inflation (CPI, %))
-            fig3 = plot_indicator_plotly(df, selected_countries, "Inflation (CPI, %))")
-            st.plotly_chart(fig3, use_container_width=True)
+            fig_econ = plot_indicator_plotly(df, selected_countries, selected_economic)
+            st.plotly_chart(fig_econ, use_container_width=True, key="economic_chart")
         
         # WELL-BEING INDICATORS (Right Column)
         with col_wellbeing:
             st.markdown('<p class="section-header">Well-being Indicators</p>', unsafe_allow_html=True)
             
-            # 4. Life expectancy at birth, total (years)
-            fig4 = plot_indicator_plotly(df, selected_countries, "Life expectancy at birth, total (years)")
-            st.plotly_chart(fig4, use_container_width=True)
-            st.write("")
+            selected_wellbeing = st.selectbox(
+                "Select Well-being Indicator",
+                wellbeing_indicators,
+                key="wellbeing_selector"
+            )
             
-            # 5. Gini index
-            fig5 = plot_indicator_plotly(df, selected_countries, "Gini index")
-            st.plotly_chart(fig5, use_container_width=True)
-            st.write("")
+            fig_well = plot_indicator_plotly(df, selected_countries, selected_wellbeing)
+            st.plotly_chart(fig_well, use_container_width=True, key="wellbeing_chart")
             
-            # 6. Current health expenditure (% of GDP)
-            fig6 = plot_indicator_plotly(df, selected_countries, "Current health expenditure (% of GDP)")
-            st.plotly_chart(fig6, use_container_width=True)
     elif len(selected_countries) == 0:
         st.info("Please select at least one country from the selector above to view comparisons.")
     else:
@@ -521,8 +550,8 @@ elif selected_tab == "Conclusions":
     Our analysis reveals important patterns in how countries convert economic prosperity into well-being:
     
     - **Economic Performance**: Developed nations show strong GDP growth but varying efficiency in well-being conversion
-    - **Health Outcomes**: Healthcare spending doesn't always correlate directly with life expectancy
-    - **Inequality**: Income distribution varies significantly across similar GDP levels
+    - **Health Outcomes**: Life expectancy varies significantly across similar GDP levels
+    - **Inequality**: Income distribution (Gini index) shows distinct patterns across regions
     - **Regional Patterns**: Different continents show distinct approaches to balancing growth and well-being
     
     ### Future Considerations
