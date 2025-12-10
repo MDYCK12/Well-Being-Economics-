@@ -218,24 +218,17 @@ def plot_indicator_plotly(df, countries, indicator):
     """
     Creates an interactive Plotly line chart for one indicator across multiple countries.
     Works well with dark themes.
-    
-    Parameters:
-    - df: DataFrame with columns ['Country Name', 'Indicator Name', 'Year', 'Value']
-    - countries: List of country names to plot
-    - indicator: String, the indicator name to plot
-    
-    Returns:
-    - Plotly figure object
     """
+
     # Filter data
     df_filtered = df[
         (df["Country Name"].isin(countries)) &
         (df["Indicator Name"] == indicator) &
         (df["Year"] >= 2000) &
-        (df["Year"] <= 2020)
+        (df["Year"] <= 2023)
     ].sort_values("Year")
     
-    # Check if data exists
+    # No data case
     if df_filtered.empty:
         fig = go.Figure()
         fig.add_annotation(
@@ -255,10 +248,10 @@ def plot_indicator_plotly(df, countries, indicator):
     # Create figure
     fig = go.Figure()
     
-    # Color palette that works well with dark backgrounds
+    # Colors
     colors = ['#667eea', '#f093fb', '#4facfe', '#fa709a', '#fee140', '#30cfd0', '#a8edea', '#fed6e3']
     
-    # Add a line for each country
+    # Add lines
     for i, country in enumerate(countries):
         df_country = df_filtered[df_filtered["Country Name"] == country]
         
@@ -276,7 +269,7 @@ def plot_indicator_plotly(df, countries, indicator):
                              '<extra></extra>'
             ))
     
-    # Update layout for dark theme
+    # Update layout (✔ FIXED INDENTATION)
     fig.update_layout(
         template="plotly_dark",
         paper_bgcolor="#151b3d",
@@ -300,22 +293,69 @@ def plot_indicator_plotly(df, countries, indicator):
             showgrid=True,
             zeroline=False
         ),
+
+        # ⭐ Updated Legend (StockPeers-style)
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-            bgcolor="rgba(21, 27, 61, 0.8)",
-            bordercolor="#2a3358",
-            borderwidth=1
+            y=-0.25,
+            xanchor="center",
+            x=0.5,
+            bgcolor="rgba(255,255,255,0.03)",
+            bordercolor="rgba(255,255,255,0.15)",
+            borderwidth=1,
+            traceorder="normal",
+            itemwidth=80,
+            font=dict(size=11, color="#e0e0e0"),
+            itemsizing="constant",
         ),
+
         hovermode='x unified',
-        height=400,
-        margin=dict(l=60, r=20, t=60, b=60)
+        height=420,
+        margin=dict(l=60, r=20, t=60, b=80)
     )
-    
+
     return fig
+
+# fig.update_layout(
+#         template="plotly_dark",
+#         paper_bgcolor="#151b3d",
+#         plot_bgcolor="#151b3d",
+#         font=dict(color="#e0e0e0", size=11),
+#         title=dict(
+#             text=indicator,
+#             font=dict(size=14, color="#ffffff"),
+#             x=0.5,
+#             xanchor='center'
+#         ),
+#         xaxis=dict(
+#             title="Year",
+#             gridcolor="#2a3358",
+#             showgrid=True,
+#             zeroline=False
+#         ),
+#         yaxis=dict(
+#             title="Value",
+#             gridcolor="#2a3358",
+#             showgrid=True,
+#             zeroline=False
+#         ),
+#         legend=dict(
+#             orientation="h",
+#             yanchor="bottom",
+#             y=1.02,
+#             xanchor="right",
+#             x=1,
+#             bgcolor="rgba(21, 27, 61, 0.8)",
+#             bordercolor="#2a3358",
+#             borderwidth=1
+#         ),
+#         hovermode='x unified',
+#         height=400,
+#         margin=dict(l=60, r=20, t=60, b=60)
+#     )
+    
+    #return fig
 
 # ----------------------------
 # FUNCTION 5: creating Scatterplot (Katha)
@@ -460,13 +500,11 @@ def plot_wellbeing_timeseries(pivot_econ_wellbeing):
 
     fig.show()
 
-
-
     #--- Function to create Quadrant Scatter Plot for all countries across two indicators Max 
 
-#----------------------------------------------------------------
 
-
+import plotly.express as px
+import pandas as pd
 import numpy as np
 
 def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
@@ -530,7 +568,7 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
     fig.update_traces(
         mode='markers+text',
         textposition='top right', # Moved to 'top right' for better general visibility
-        textfont=dict(size=10, color='white')
+        textfont=dict(size=10, color='black')
     )
 
     # 5. ADD CENTER LINES (Quadrants)
@@ -538,20 +576,8 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
     fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="red", annotation_text="ESI Average (0)")
 
     # 6. ADJUST LAYOUT
-    fig.update_layout(
-        height=600,
-        showlegend=True,
-        legend_title_text="Quadrant",
-        legend=dict(
-            font=dict(color="white"),      # <-- legend text color
-            title=dict(font=dict(color="white"))
-        ),
-        title=dict(font=dict(color="white")),
-        xaxis=dict(titlefont=dict(color="white"), tickfont=dict(color="white")),
-        yaxis=dict(titlefont=dict(color="white"), tickfont=dict(color="white")),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
-    )
+    fig.update_layout(showlegend=True, height=600, legend_title_text="Quadrant", hovermode="closest")
+    
     return fig
 
 # --- EXAMPLE USAGE ---
