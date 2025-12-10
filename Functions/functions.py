@@ -630,7 +630,7 @@ def plot_wellbeing_timeseries(pivot_econ_wellbeing):
         value_name="Score"
     )
 
-    # Create line chart
+    # Create line chart Katha
     fig = px.line(
         plot_df,
         x="Year",
