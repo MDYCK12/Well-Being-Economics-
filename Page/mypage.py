@@ -28,6 +28,10 @@ from Functions.functions import (
     plot_esi_wti_quadrants
 )
 
+st.cache_data.clear()  # clears cached data
+st.cache_resource.clear()  # clears cached models/resources
+
+
 # -----------------------------------
 # PAGE CONFIG
 # -----------------------------------
