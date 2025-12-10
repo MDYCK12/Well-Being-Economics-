@@ -217,7 +217,7 @@ def plot_two_indicators_long(df, countries, ind1, ind2):
 def plot_indicator_plotly(df, countries, indicator):
     """
     Creates an interactive Plotly line chart for one indicator across multiple countries.
-    Works well with dark themes.
+    Works well with dark themes, legend shows ONLY dots.
     """
 
     # Filter data
@@ -227,8 +227,8 @@ def plot_indicator_plotly(df, countries, indicator):
         (df["Year"] >= 2000) &
         (df["Year"] <= 2023)
     ].sort_values("Year")
-    
-    # No data case
+
+    # Handle empty dataset
     if df_filtered.empty:
         fig = go.Figure()
         fig.add_annotation(
@@ -239,83 +239,233 @@ def plot_indicator_plotly(df, countries, indicator):
         )
         fig.update_layout(
             template="plotly_dark",
-            paper_bgcolor="#2a2a2a",
-            plot_bgcolor="#2a2a2a",
+            paper_bgcolor="#1a2035",
+            plot_bgcolor="#1a2035",
             height=400
         )
         return fig
-    
+
     # Create figure
     fig = go.Figure()
-    
-    # Colors
     colors = ['#667eea', '#f093fb', '#4facfe', '#fa709a', '#fee140', '#30cfd0', '#a8edea', '#fed6e3']
-    
-    # Add lines
+
+    # Add traces
     for i, country in enumerate(countries):
-        df_country = df_filtered[df_filtered["Country Name"] == country]
-        
-        if not df_country.empty:
-            fig.add_trace(go.Scatter(
-                x=df_country["Year"],
-                y=df_country["Value"],
-                mode='lines+markers',
-                name=country,
-                line=dict(width=2.5, color=colors[i % len(colors)]),
-                marker=dict(size=6),
-                hovertemplate='<b>%{fullData.name}</b><br>' +
-                             'Year: %{x}<br>' +
-                             'Value: %{y:.2f}<br>' +
-                             '<extra></extra>'
-            ))
-    
-    # Update layout (✔ FIXED INDENTATION)
+        df_c = df_filtered[df_filtered["Country Name"] == country]
+        if df_c.empty:
+            continue
+        color = colors[i % len(colors)]
+
+        # Trace with lines + markers
+        fig.add_trace(go.Scatter(
+            x=df_c["Year"],
+            y=df_c["Value"],
+            mode="lines+markers",
+            line=dict(width=2.5, color=color),
+            marker=dict(size=7, color=color),
+            name=country,
+            showlegend=False
+        ))
+
+        # Legend dot only
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode="markers",
+            marker=dict(size=10, color=color),
+            name=country,
+            showlegend=True
+        ))
+
+    # Layout
     fig.update_layout(
         template="plotly_dark",
-        paper_bgcolor="#151b3d",
-        plot_bgcolor="#151b3d",
-        font=dict(color="#e0e0e0", size=11),
+        paper_bgcolor="#1a2035",
+        plot_bgcolor="#1a2035",
+        font=dict(color="#e0e0e0", family="Arial, sans-serif", size=12),
         title=dict(
             text=indicator,
-            font=dict(size=14, color="#ffffff"),
+            font=dict(size=16, color="#ffffff"),
             x=0.5,
             xanchor='center'
         ),
         xaxis=dict(
-            title="Year",
+            title=dict(text="Year", standoff=20),  # moves "Year" label away from legend
             gridcolor="#2a3358",
             showgrid=True,
-            zeroline=False
+            zeroline=False,
+            automargin=True
         ),
         yaxis=dict(
             title="Value",
             gridcolor="#2a3358",
             showgrid=True,
-            zeroline=False
+            zeroline=False,
+            automargin=True
         ),
-
-        # ⭐ Updated Legend (StockPeers-style)
         legend=dict(
             orientation="h",
-            yanchor="bottom",
-            y=-0.25,
+            yanchor="top",
+            y=-0.15,               # move legend further down
             xanchor="center",
             x=0.5,
             bgcolor="rgba(255,255,255,0.03)",
             bordercolor="rgba(255,255,255,0.15)",
             borderwidth=1,
             traceorder="normal",
-            itemwidth=80,
+            itemwidth=60,          # tighter spacing between dot and country name
             font=dict(size=11, color="#e0e0e0"),
-            itemsizing="constant",
+            itemsizing="constant"
         ),
-
         hovermode='x unified',
-        height=420,
-        margin=dict(l=60, r=20, t=60, b=80)
+        height=450,
+        margin=dict(l=60, r=20, t=60, b=140)
     )
 
     return fig
+
+
+# def plot_indicator_plotly(df, countries, indicator):
+#     """
+#     Creates an interactive Plotly line chart for one indicator across many countries.
+#     Styled similar to StockPeers (clean, modern, dark theme).
+#     """
+
+#     # Filter
+#     df_filtered = df[
+#         (df["Country Name"].isin(countries)) &
+#         (df["Indicator Name"] == indicator) &
+#         (df["Year"] >= 2000) &
+#         (df["Year"] <= 2023)
+#     ].sort_values("Year")
+
+#     if df_filtered.empty:
+#         fig = go.Figure()
+#         fig.add_annotation(
+#             text="No data available",
+#             xref="paper", yref="paper",
+#             x=0.5, y=0.5, showarrow=False,
+#             font=dict(size=16, color="#999")
+#         )
+#         fig.update_layout(
+#             template="plotly_dark",
+#             paper_bgcolor="#151b3d",
+#             plot_bgcolor="#151b3d",
+#             height=400
+#         )
+#         return fig
+    
+#     # Figure
+#     fig = go.Figure()
+
+#     # Smooth color palette
+#     colors = [
+#         "#6C8CFF", "#F79AFF", "#45C9FF", "#FF7AA2",
+#         "#FFE066", "#3EE0D0", "#A8FFE8", "#F4D6FF"
+#     ]
+
+#     # Add series
+#     for i, country in enumerate(countries):
+#         df_c = df_filtered[df_filtered["Country Name"] == country]
+#         if df_c.empty:
+#             continue
+
+#         fig.add_trace(go.Scatter(
+#             x=df_c["Year"],
+#             y=df_c["Value"],
+#             mode="lines+markers",
+#             name=country,
+#             line=dict(
+#                 width=2,
+#                 color=colors[i % len(colors)],
+#                 shape="spline",
+#                 smoothing=1.2
+#             ),
+#             marker=dict(
+#                 size=5,
+#                 color=colors[i % len(colors)],
+#                 opacity=0.9
+#             ),
+#             legendgroup=country,
+#             showlegend=True,
+#             hovertemplate="<b>%{fullData.name}</b><br>"
+#                           "Year: %{x}<br>"
+#                           "Value: %{y:.2f}<extra></extra>"
+#         ))
+
+#     # Updated Layout
+#     fig.update_layout(
+#         template="plotly_dark",
+#         paper_bgcolor="#151b3d",
+#         plot_bgcolor="#151b3d",
+#         height=430,
+
+#         font=dict(color="#e6e6e6", size=12),
+
+#         title=dict(
+#             text=indicator,
+#             x=0.5,
+#             font=dict(size=16, color="white")
+#         ),
+
+#         xaxis=dict(
+#             title="Year",
+#             gridcolor="#253055",
+#             zeroline=False
+#         ),
+#         yaxis=dict(
+#             title="Value",
+#             gridcolor="#253055",
+#             zeroline=False
+#         ),
+
+#         # ⭐ Clean, wider legend (StockPeers-style)
+#         legend=dict(
+#             orientation="h",
+#             yanchor="bottom",
+#             y=-0.32,
+#             xanchor="center",
+#             x=0.5,
+
+#             bgcolor="rgba(255,255,255,0.03)",
+#             bordercolor="rgba(255,255,255,0.12)",
+#             borderwidth=1,
+
+#             font=dict(size=11),
+#             itemwidth=120,
+#             itemsizing="constant",
+
+#             # less space between items → better for many countries
+#             tracegroupgap=4
+#         ),
+
+#         # unified hover like StockPeers
+#         hovermode="x unified",
+
+#         margin=dict(l=60, r=40, t=60, b=110),
+#     )
+
+#     # ⭐ Make legend show only DOT markers (no line segment)
+#     fig.update_traces(
+#         mode="lines+markers",
+#         marker=dict(size=7),
+#         selector=dict()
+#     )
+#     fig.update_layout(
+#         legend_traceorder="normal"
+#     )
+#     for trace in fig.data:
+#         trace.legendgroup = trace.name
+#         trace.showlegend = True
+
+#         # Override default legend icon to DOT only
+#         trace.marker.symbol = "circle"
+#         trace.marker.line.width = 0
+#         trace.line.width = 2  # but only visible in chart, not in legend
+
+#         trace.legendgrouptitle = None
+
+#     return fig
+
 
 # fig.update_layout(
 #         template="plotly_dark",
@@ -480,7 +630,7 @@ def plot_wellbeing_timeseries(pivot_econ_wellbeing):
         value_name="Score"
     )
 
-    # Create line chart
+    # Create line chart Katha
     fig = px.line(
         plot_df,
         x="Year",
