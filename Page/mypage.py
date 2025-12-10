@@ -368,6 +368,8 @@ else:
 # OVERVIEW TAB
 # -----------------------------------
 if selected_tab == "Overview":
+    st.write("---")
+    st.write("")
     st.subheader("Which countries are best at converting economic prosperity into well-being?")
     st.write("")
     st.write("---")
