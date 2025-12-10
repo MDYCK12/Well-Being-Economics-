@@ -262,7 +262,8 @@ st.markdown("""
 # LOAD DATA ONCE (GLOBAL) - WITH CACHING FOR FASTER LOAD
 # -----------------------------------
 df_url = "https://docs.google.com/spreadsheets/d/1E0lyCSxlC0ajNtzjpWo17TX5DEeEjd33E-j6c7fOBcg/export?format=csv"
-df_overview_url = "https://docs.google.com/spreadsheets/d/1JRp5v_2U4HMxl3aB_UZF7MHHPn3o0cAHSgn0ZeuFrvE/export?format=csv&gid=235949117"
+df_overview_url = "https://docs.google.com/spreadsheets/d/1M8VQzniWDbRQIgaQ6bmgylWPGtMc3dBzPnQWxwBJPqU/export?format=csv&gid=147164817"
+
 
 @st.cache_data(ttl=3600)  # Cache for 1 hour
 def load_data():
@@ -290,23 +291,23 @@ if df_overview is not None:
     df_overview.columns = [c.strip() for c in df_overview.columns]
 
 # -----------------------------------
+# NAVIGATION TABS - AT THE TOP
+# -----------------------------------
+tabs = ["Overview", "Analytical Insights", "Conclusions"]
+selected_tab = st.radio("", tabs, horizontal=True, label_visibility="collapsed", key="main_tabs")
+
+st.write("")
+
+# -----------------------------------
 # HEADER
 # -----------------------------------
 st.markdown("# Evolution of Economic Prosperity and Well-being Globally")
-st.markdown("#### Which countries are best at converting economic prosperity into well-being?")
+
 
 st.write("")
 
 # -----------------------------------
-# NAVIGATION TABS - MOVED UP
-# -----------------------------------
-tabs = ["Overview", "Analytical Insights", "Conclusions"]
-selected_tab = st.radio("", tabs, horizontal=True, label_visibility="collapsed")
-
-st.write("")
-
-# -----------------------------------
-# GLOBAL COUNTRY SELECTOR
+# GLOBAL COUNTRY SELECTOR - 60% WIDTH
 # -----------------------------------
 if df_overview is not None:
     all_countries = sorted(df_overview['Country Name'].unique())
@@ -322,12 +323,16 @@ if df_overview is not None:
     # Filter default countries to only those available
     default_countries = [c for c in default_countries if c in all_countries]
     
-    selected_countries = st.multiselect(
-        "🌍 Select countries to compare",
-        all_countries,
-        default=default_countries,
-        key="global_country_selector"
-    )
+    # Create a column layout for 60% width
+    col_select, col_empty = st.columns([0.6, 0.4])
+    
+    with col_select:
+        selected_countries = st.multiselect(
+            "🌍 Select countries to compare",
+            all_countries,
+            default=default_countries,
+            key="global_country_selector"
+        )
 else:
     selected_countries = []
 
@@ -337,8 +342,7 @@ st.write("---")
 # OVERVIEW TAB
 # -----------------------------------
 if selected_tab == "Overview":
-    st.subheader("Overview")
-    st.write("Comparative analysis of economic prosperity and well-being across countries.")
+    st.write("#### Which countries are best at converting economic prosperity into well-being?")
 
     if df_overview is not None and len(selected_countries) > 0:
         # Filter data for selected countries
