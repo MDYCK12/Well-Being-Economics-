@@ -514,6 +514,10 @@ def plot_indicator_plotly(df, countries, indicator):
 
 
 
+import numpy as np
+import plotly.express as px
+import pandas as pd
+
 def quadrant_scatter_plot(final_df):
     """
     Creates a quadrant scatter plot of average economic vs wellbeing PCA scores per country.
@@ -550,21 +554,21 @@ def quadrant_scatter_plot(final_df):
     df_final_ranking['Quadrant'] = np.select(conditions, choices, default='Center/Edge Case')
 
     # 3. CREATE THE SCATTER PLOT
+    # *** FIXES APPLIED HERE ***
     fig = px.scatter(
         df_final_ranking, 
-        x='Avg_ESI',
-        y='Avg_WTI',
+        x='Avg_Econ',           # CORRECTED: Changed from 'Avg_ESI'
+        y='Avg_Wellbeing',      # CORRECTED: Changed from 'Avg_WTI'
         text='Country Name',
-        color='Country Group',
+        color='Quadrant',       # CORRECTED: Changed from 'Country Group' to use the calculated 'Quadrant'
         size_max=10,
         hover_name='Country Name',
         title='ESI vs. WTI Quadrant Analysis (Average 2000-2023)',
         labels={
-            'Avg_ESI': 'Economic Success Index (ESI)',
-            'Avg_WTI': 'Well-Being Translation Index (WTI)'
+            'Avg_Econ': 'Economic Success Index (ESI)',        # CORRECTED: Key changed from 'Avg_ESI'
+            'Avg_Wellbeing': 'Well-Being Translation Index (WTI)' # CORRECTED: Key changed from 'Avg_WTI'
         }
     )
-
 
     # 4. FIX LABEL OVERLAP
     fig.update_traces(
@@ -584,6 +588,11 @@ def quadrant_scatter_plot(final_df):
     )
 
     fig.show()
+
+# Note: You may need to ensure you have these imports at the top of your script:
+# import pandas as pd
+# import numpy as np
+# import plotly.express as px
 
 # ----------------------------
 # FUNCTION 6: Creation of individual Line Chart for the economic indicator
