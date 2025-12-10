@@ -73,7 +73,7 @@ st.markdown("""
     div.row-widget.stRadio > div {
         background-color: #151b3d;
         padding: 0.75rem;
-        border-radius: 10px;
+        border-radius: 0px;
         gap: 0.75rem;
         display: flex;
         justify-content: center;
@@ -290,21 +290,26 @@ if df is not None:
 if df_overview is not None:
     df_overview.columns = [c.strip() for c in df_overview.columns]
 
+
+
+
+
+# -----------------------------------
+# HEADER
+# -----------------------------------
+st.markdown("# Evolution of Economic Prosperity and Well-being")
+
+
+st.write("")
+st.write("---")
+
 # -----------------------------------
 # NAVIGATION TABS - AT THE TOP
 # -----------------------------------
 tabs = ["Overview", "Analytical Insights", "Conclusions"]
 selected_tab = st.radio("", tabs, horizontal=True, label_visibility="collapsed", key="main_tabs")
 
-st.write("")
-
-# -----------------------------------
-# HEADER
-# -----------------------------------
-st.markdown("# Evolution of Economic Prosperity and Well-being Globally")
-
-
-st.write("")
+st.write("---")
 
 # -----------------------------------
 # GLOBAL COUNTRY SELECTOR - 60% WIDTH
@@ -335,14 +340,19 @@ if df_overview is not None:
         )
 else:
     selected_countries = []
+    st.write("")
+    st.write("")
+    st.write("")
+    st.write("")
 
-st.write("---")
 
 # -----------------------------------
 # OVERVIEW TAB
 # -----------------------------------
 if selected_tab == "Overview":
-    st.write("#### Which countries are best at converting economic prosperity into well-being?")
+    st.subheader("Which countries are best at converting economic prosperity into well-being?")
+    st.write("")
+    st.write("---")
 
     if df_overview is not None and len(selected_countries) > 0:
         # Filter data for selected countries
@@ -489,7 +499,6 @@ if selected_tab == "Overview":
 # -----------------------------------
 elif selected_tab == "Analytical Insights":
     st.subheader("How do countries compare across indicator level?")
-    st.write("")
 
     if df is not None and len(selected_countries) > 0:
         st.write("---")
