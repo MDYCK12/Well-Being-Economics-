@@ -547,7 +547,7 @@ elif selected_tab == "Analytical Insights":
         
         # ECONOMIC INDICATORS (Left Column)
         with col_economic:
-            st.markdown('<p class="section-header">Economic Indicators</p>', unsafe_allow_html=True)
+            st.markdown("### Economic Index Indicators")
             
             selected_economic = st.selectbox(
                 "Select Economic Indicator",
@@ -560,7 +560,7 @@ elif selected_tab == "Analytical Insights":
         
         # WELL-BEING INDICATORS (Right Column)
         with col_wellbeing:
-            st.markdown('<p class="section-header">Well-being Indicators</p>', unsafe_allow_html=True)
+            st.markdown("### Well-being Index Indicators")
             
             selected_wellbeing = st.selectbox(
                 "Select Well-being Indicator",
