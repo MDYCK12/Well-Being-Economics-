@@ -325,20 +325,26 @@ selected_tab = st.radio("", tabs, horizontal=True, label_visibility="collapsed",
 st.write("---")
 
 # -----------------------------------
+# -----------------------------------
 # GLOBAL COUNTRY SELECTOR - 60% WIDTH
-# Only show for Overview and Analytical Insights tabs
+# Different defaults for different tabs
 # -----------------------------------
 if selected_tab in ["Overview", "Analytical Insights"]:
     if df_overview is not None:
         all_countries = sorted(df_overview['Country Name'].unique())
         
-        # Default selection
-        default_countries = [
-            "Japan", "China", "Indonesia",  # Asia
-            "Germany", "Denmark", "Poland",  # Europe
-            "South Africa", "Ghana", "Cote d'Ivoire",  # Africa
-            "United States", "Chile", "Costa Rica"  # Americas
-        ]
+        # Different default selections based on tab
+        if selected_tab == "Overview":
+            # Default selection for Overview - all countries
+            default_countries = [
+                "Japan", "China", "Indonesia",  # Asia
+                "Germany", "Denmark", "Poland",  # Europe
+                "South Africa", "Ghana", "Cote d'Ivoire",  # Africa
+                "United States", "Chile", "Costa Rica"  # Americas
+            ]
+        else:  # Analytical Insights
+            # Only USA and Denmark for Analytical Insights
+            default_countries = ["United States"]
         
         # Filter default countries to only those available
         default_countries = [c for c in default_countries if c in all_countries]
@@ -351,7 +357,7 @@ if selected_tab in ["Overview", "Analytical Insights"]:
                 "🌍 Select countries to compare",
                 all_countries,
                 default=default_countries,
-                key="global_country_selector"
+                key=f"country_selector_{selected_tab}"  # Different key per tab
             )
     else:
         selected_countries = []

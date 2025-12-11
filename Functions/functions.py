@@ -537,6 +537,9 @@ def quadrant_scatter_plot(final_df):
         'score_pca_economics': 'Avg_Econ',
         'score_pca_wellbeing': 'Avg_Wellbeing'
     }, inplace=True)
+    
+    # Add bold formatting to country names
+    df_final_ranking['Country Name Bold'] = '<b>' + df_final_ranking['Country Name'] + '</b>'
 
     # 2. CALCULATE QUADRANTS RELATIVE TO 0 (or global mean)
     conditions = [
@@ -554,40 +557,55 @@ def quadrant_scatter_plot(final_df):
     df_final_ranking['Quadrant'] = np.select(conditions, choices, default='Center/Edge Case')
 
     # 3. CREATE THE SCATTER PLOT
-    # *** FIXES APPLIED HERE ***
     fig = px.scatter(
         df_final_ranking, 
-        x='Avg_Econ',           # CORRECTED: Changed from 'Avg_ESI'
-        y='Avg_Wellbeing',      # CORRECTED: Changed from 'Avg_WTI'
-        text='Country Name',
-        color='Quadrant',       # CORRECTED: Changed from 'Country Group' to use the calculated 'Quadrant'
+        x='Avg_Econ',
+        y='Avg_Wellbeing',
+        text='Country Name Bold',  # Use bold version
+        color='Quadrant',
         size_max=10,
         hover_name='Country Name',
-        title='ESI vs. WTI Quadrant Analysis (Average 2000-2023)',
+        title='EI vs. WBI Quadrant Analysis (Average 2000-2023)',
         labels={
-            'Avg_Econ': 'Economic Success Index (ESI)',        # CORRECTED: Key changed from 'Avg_ESI'
-            'Avg_Wellbeing': 'Well-Being Translation Index (WTI)' # CORRECTED: Key changed from 'Avg_WTI'
+            'Avg_Econ': 'Economic Index (EI)',
+            'Avg_Wellbeing': 'Well-Being Index (WBI)'
         }
     )
 
-    # 4. FIX LABEL OVERLAP
+    # 4. SHOW LABELS WITH BOLD WHITE TEXT
     fig.update_traces(
         mode='markers+text',
+        marker=dict(size=12),
         textposition='top center',
-        textfont=dict(size=10)
+        textfont=dict(size=11, color='#ffffff', family='Arial')
     )
 
     # 5. ADD CENTER LINES
     fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="gray", annotation_text="Wellbeing Avg")
     fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="gray", annotation_text="Economic Avg")
 
-    # 6. LAYOUT ADJUSTMENTS
+    # 6. LAYOUT ADJUSTMENTS - Bold white axis titles
     fig.update_layout(
-        height=600,
-        showlegend=True
+        height=700,  # Increased height for better spacing
+        showlegend=True,
+        xaxis=dict(
+            title=dict(
+                text='<b>Economic Index (EI)</b>',
+                font=dict(color='#ffffff', size=20)
+            )
+        ),
+        yaxis=dict(
+            title=dict(
+                text='<b>Well-Being Index (WBI)</b>',
+                font=dict(color='#ffffff', size=20)
+            )
+        ),
+        # Add generous margins to prevent cutoff
+        margin=dict(l=100, r=100, t=100, b=100)
     )
 
     fig.show()
+
 
 # Note: You may need to ensure you have these imports at the top of your script:
 # import pandas as pd
@@ -715,8 +733,8 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
     fig.update_traces(
         mode='markers+text',
         marker=dict(size=30),
-        textposition='top right',
-        textfont=dict(size=11, color='white')
+        textposition='bottom center',
+        textfont=dict(size=13, color='white')
     )
 
     fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="red", annotation_text="WTI Average (0)")
