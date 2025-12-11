@@ -584,10 +584,7 @@ elif selected_tab == "Conclusions":
     - **Well-Being**: Despite comparable economic performance, countries show differences in well-being levels, which is a result of differences in life expectancy and inequality. 
                 The difference is especially pronounced for the US, which ranks high on the economic indicator but relatively low on the well-being indicator  
     
-    ### Future Considerations
-    
-    Understanding these relationships helps policymakers design more effective strategies for improving quality of life.
-    """)
+
     st.write("")
     st.write("")
     st.write("")
