@@ -709,10 +709,10 @@ def plot_esi_wti_quadrants(df_merged_scores: pd.DataFrame):
         (df_final_ranking['Avg_ESI'] > 0) & (df_final_ranking['Avg_WTI'] < 0)
     ]
     choices = [
-        'Successful Translator (High ESI, High WTI)',
-        'Efficient Translator (Low ESI, High WTI)',
-        'Poor Performer (Low ESI, Low WTI)',
-        'Inefficient Translator (High ESI, Low WTI)'
+        'High ESI, High WTI',
+        'Low ESI, High WTI',
+        'Low ESI, Low WTI',
+        'High ESI, Low WTI'
     ]
     df_final_ranking['Country Group'] = np.select(conditions, choices, default='Central/Edge Case')
 
