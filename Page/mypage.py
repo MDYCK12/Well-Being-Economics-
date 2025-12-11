@@ -493,8 +493,7 @@ if selected_tab == "Overview":
         st.write("---")
         st.markdown(
             "### Key Findings\n\n"
-            "Countries in the upper-right quadrant (Successful Translators) demonstrate both high economic success and high well-being outcomes. "
-            "The analysis reveals different strategies countries employ to convert economic prosperity into quality of life improvements.\n\n"
+            "Countries in the upper-right quadrant demonstrate both high economic success and high well-being outcomes. "
             "Our indices are based on PCA (Principal Component Analysis) combining multiple economic and well-being indicators."
         )
 
