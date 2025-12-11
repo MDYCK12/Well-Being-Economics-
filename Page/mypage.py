@@ -579,13 +579,10 @@ elif selected_tab == "Conclusions":
     # KEY TAKEAWAYS SECTION
     st.markdown("""
     ### Key Takeaways
-    
-    Our analysis reveals important patterns in how countries convert economic prosperity into well-being:
-    
-    - **Economic Performance**: Developed nations show strong GDP growth but varying efficiency in well-being conversion
-    - **Health Outcomes**: Life expectancy varies significantly across similar GDP levels
-    - **Inequality**: Income distribution (Gini index) shows distinct patterns across regions
-    - **Regional Patterns**: Different continents show distinct approaches to balancing growth and well-being
+        
+    - **Economic Performance**: The US clearly performs best at economic level, followed by Japan, Denmark and Germany 
+    - **Well-Being**: Despite comparable economic performance, countries show differences in well-being levels, which is a result of differences in life expectancy and inequality. 
+                The difference is especially pronounced for the US, which ranks high on the economic indicator but relatively low on the well-being indicator  
     
     ### Future Considerations
     
@@ -657,4 +654,3 @@ col1, col2, col3 = st.columns([2, 1, 2])
 with col2:
     if st.button("🎈 Celebrate Progress"):
         st.balloons()
-        
