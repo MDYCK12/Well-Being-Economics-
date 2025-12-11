@@ -584,9 +584,7 @@ elif selected_tab == "Conclusions":
     - **Well-Being**: Despite comparable economic performance, countries show differences in well-being levels, which is a result of differences in life expectancy and inequality. 
                 The difference is especially pronounced for the US, which ranks high on the economic indicator but relatively low on the well-being indicator  
     
-    ### Future Considerations
-    
-    Understanding these relationships helps policymakers design more effective strategies for improving quality of life.
+  
     """)
     st.write("")
     st.write("")
@@ -610,15 +608,15 @@ elif selected_tab == "Conclusions":
     
     <h4 style="color: #667eea; margin-top: 1.5rem;">Individual Indicators</h4>
     
-    <p><strong>GDP per capita</strong> (Thousands, USD) - Measures economic output and standard of living | Source: IMF Data</p>
+    <p><strong>GDP per capita</strong> (Thousands, USD) -  Measures a country's economic output per person, used as proxy to assess average economic prosperity | Source: IMF Data</p>
     
-    <p><strong>Unemployment levels</strong> (%) - Measures labor market health and resource utilization | Source: IMF Data</p>
+    <p><strong>Unemployment levels</strong> (%) - Assesses labor market health and utilization of a country's workforce | Source: IMF Data</p>
     
-    <p><strong>Inflation</strong> (CPI, Index) - Measures macroeconomic stability and price changes | Source: IMF Data</p>
+    <p><strong>Inflation</strong> (CPI, Index) - Measures changes in price level, reflecting one aspect of macroeconomic stability  | Source: IMF Data</p>
     
-    <p><strong>Life expectancy at birth</strong> (Years) - Measures overall public health and longevity | Source: World Bank Data</p>
+    <p><strong>Life expectancy at birth</strong> (Years) - Assesses overall public health, quality of health care and living conditions | Source: World Bank Data</p>
     
-    <p><strong>Gini Index</strong> - Measures socio-economic inequality in distribution of income | Source: World Bank Data</p>
+    <p><strong>Gini Index</strong> - Measures income inequality, a higher GINI index means greater income nequality  | Source: World Bank Data</p>
     </div>
     """, unsafe_allow_html=True)
     
