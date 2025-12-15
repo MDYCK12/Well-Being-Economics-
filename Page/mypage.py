@@ -310,7 +310,7 @@ if df_overview is not None:
 # -----------------------------------
 # HEADER
 # -----------------------------------
-st.markdown("# Evolution of Economic Prosperity and Well-being")
+st.markdown("# Economic Development and Well-Being")
 
 
 st.write("")
@@ -464,7 +464,7 @@ if selected_tab == "Overview":
         st.write("---")
         
         # Quadrant analysis below
-        st.markdown("### EI vs. WBI Quadrant Analysis")
+        st.markdown("### Quadrant Analysis: Economic Prosperity vs. Well-Being") 
         st.write("")
         
         fig_quadrant = plot_esi_wti_quadrants(df_filtered_renamed)
@@ -638,7 +638,7 @@ elif selected_tab == "Conclusions":
     Americas: United States, Chile, Costa Rica</p>
     
     <p><strong>Selection Rationale:</strong><br/>
-    Countries were selected based on geographic diversity, robust data availability, 
+    Countries are selected based on geographic diversity, robust data availability, 
     and representation across a spectrum of economic development levels.</p>
     </div>
     """, unsafe_allow_html=True)
