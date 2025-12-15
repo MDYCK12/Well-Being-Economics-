@@ -465,7 +465,6 @@ if selected_tab == "Overview":
         
         # Quadrant analysis below
         st.markdown("### EI vs. WBI Quadrant Analysis")
-        st.write("This chart shows how countries convert economic success into well-being.")
         st.write("")
         
         fig_quadrant = plot_esi_wti_quadrants(df_filtered_renamed)
