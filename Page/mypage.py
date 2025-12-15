@@ -319,7 +319,7 @@ st.write("---")
 # -----------------------------------
 # NAVIGATION TABS - AT THE TOP
 # -----------------------------------
-tabs = ["Overview", "Analytical Insights", "Conclusions"]
+tabs = ["Overview", "Analytical Insights", "Methodology & Conclusions"]
 selected_tab = st.radio("", tabs, horizontal=True, label_visibility="collapsed", key="main_tabs")
 
 st.write("---")
@@ -578,7 +578,7 @@ elif selected_tab == "Analytical Insights":
 # -----------------------------------
 # CONCLUSIONS TAB
 # -----------------------------------
-elif selected_tab == "Conclusions":
+elif selected_tab == "Methodology & Conclusions":
     
     # KEY TAKEAWAYS SECTION
     st.markdown("""
